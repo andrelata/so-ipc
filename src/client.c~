@@ -38,9 +38,9 @@ int toSession(){
 	
 	int eleccion = 0;
 	int cant = scanf("%d", &eleccion);
-	/*while(cant!=0){
+	while(--cant!=0){
 		getchar();
-	}*/
+	}
 	while( cant < 1 || eleccion > 3 || eleccion < 1){
 		printf("Debe ingresar un numero del 1 al 3\n");
 		cant = scanf("%d", &eleccion);
