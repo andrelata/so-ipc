@@ -1,0 +1,15 @@
+
+
+
+
+int main(){
+	
+	openChannel();
+	while(1){
+		request_t readRequest();
+		switch(request_t.reqID){
+			case CONNECT:
+				connect(request_t.PID, request_t.name);
+		}
+	}
+}

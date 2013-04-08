@@ -2,4 +2,20 @@
 #define TRUE	1
 #define bool	int
 
+//options
+#define	GET_INFO	1
+#define	JOIN_SES	2
+#define	CREAT_SES	3
+#define	DISCONNECT	4
 
+bool connect(char* nickname);
+
+void disconnect();
+
+char * getSessions();
+
+void joinSession(int sessionID);
+
+void createSession(char* name);
+
+char * readText();
