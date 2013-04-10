@@ -1,0 +1,20 @@
+TARGET = cliente
+OBJS = ./obj/cliente_fifo.o
+SOURCES = cliente_fifo.c
+
+CFLAGS = -Wall -O -Wuninitialized -g
+
+
+.SILENT:
+
+$(TARGET): $(OBJS)
+	gcc -o $(TARGET) $(OBJS) -lm
+
+
+$(OBJS) : $(SOURCES) 
+	gcc -c $(SOURCES)
+	mv *.o ./obj
+
+clean:
+	-rm -rf ./obj/*.o
+	-rm -rf cliente
