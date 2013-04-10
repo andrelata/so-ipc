@@ -8,7 +8,7 @@
 
 #include "../defs.h"
 
-#define BUFSIZE 200
+#define SERVER_NAME "/tmp/fifosrv"
 
 void
 fatal(char *s)
@@ -25,12 +25,11 @@ main(int argc, char **argv)
 
 	int fdS, fdC;
 
-	char * server_name = "/tmp/fifosrv";
 	char * client_name = "/tmp/fifocli";
 
 	request_t request;
 
-	if ( access(server_name, 0) == -1 && mknod(server_name, S_IFIFO|0666, 0) == -1 )
+	if ( access(SERVER_NAME, 0) == -1 && mknod(SERVER_NAME, S_IFIFO|0666, 0) == -1 )
 	{
 		fatal("(A) Error al abrir el fifo del servidor");
 	}
@@ -40,7 +39,7 @@ main(int argc, char **argv)
 		fatal("(A) Error al abrir el fifo del cliente");
 	}
 
-	fdS = open(server_name, O_RDONLY);
+	fdS = open(SERVER_NAME, O_RDONLY);
 	fdC = open(client_name, O_WRONLY);
 
 	printf("Iniciando el servidor. \n");
@@ -55,4 +54,11 @@ main(int argc, char **argv)
 			write(fdC, &request, sizeof request);
 		}
 	}
+}
+
+
+int
+createChannel(){
+
+	
 }

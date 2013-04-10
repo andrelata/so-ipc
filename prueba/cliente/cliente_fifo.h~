@@ -5,9 +5,9 @@
 
 int openChannel();
 
-void sendRequest(request_t);
+void send(request_t);
 
-request_t receiveRequest();
+request_t receive();
 
 int closeChannel();
 

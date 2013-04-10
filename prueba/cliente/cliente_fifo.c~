@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <pthread.h>
 
-//#include "../defs.h"
+#include "../defs.h"
 #include "cliente_fifo.h"
 
 void
