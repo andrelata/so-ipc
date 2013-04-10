@@ -52,6 +52,7 @@ main(int argc, char **argv)
 			/* Aca recibo lo que manda el cliente y lo vuelvo a enviar. */
 
 			printf("Servidor recibe: %c \n", request.reqID);
+			//request.reqID = request.reqID + 1;
 			write(fdC, &request, sizeof request);
 		}
 	}

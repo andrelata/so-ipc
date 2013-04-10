@@ -89,7 +89,7 @@ main(int argc, char **argv)
 	{
 		printf("(P) Se ingreso la cadena: %.*s \n", n, buffer);
 		/*buffer lo deberia a request*/
-		request.reqID = buffer[0];
+		strncpy(request.reqID, buffer, 1);
 		write(fd, &request, sizeof request);
 	}
 
