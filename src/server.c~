@@ -15,7 +15,7 @@ int main(){
 			case DISCONNECT:
 				disconnect(req.ID);
 				break;
-			case GET_SESSIONS:
+			case GET_SESSION:
 				
 			case JOIN_SESSION:
 			case EXIT_SESSION:
