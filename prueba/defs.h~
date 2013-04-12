@@ -8,8 +8,8 @@ typedef struct request{
 	char reqID;
 	pid_t PID;
 	int par1;
-	char name[20];
-	char message[50];
+	//char name[20];
+	//char message[50];
 	time_t time;
 	float price;
 

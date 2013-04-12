@@ -45,7 +45,7 @@ void* read_xs(void * unused){
 	while ( (n = read(fd, &request, sizeof request)) > 0 )
 	{
 		/* En este ciclo recibo lo que manda el servidor */
-		printf("(H) El servidor mando: %d \n , respuesta = %d \n, mensaje = %s\n", request.reqID, request.par1, request.message);
+		printf("(H) El servidor mando: %d \n , respuesta = %d \n, mensaje = %.*s\n", request.reqID, request.par1, request.message);
 	}
 	printf("(H) Termina el proceso hijo. Se deja de escuchar el servidor. \n");
 

@@ -1,6 +1,6 @@
 TARGET = servidor
-OBJS = ./obj/servidor.o
-SOURCES = servidor.c
+OBJS = ./obj/servidor.o ./obj/servidor_fifo.o ./obj/servidorStruct.o
+SOURCES = servidor_fifo.c servidor.c
 
 CFLAGS = -Wall -O -Wuninitialized -g
 

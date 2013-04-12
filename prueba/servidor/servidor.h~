@@ -14,7 +14,7 @@ void checkSession(pid_t PID, user_t * user);
 
 void getSession(pid_t PID);
 
-void joinSession(pid_t PID, int n, user_t * user);
+void joinSession(pid_t PID, int n);
 
 void exitSession(pid_t PID);
 
