@@ -35,5 +35,7 @@ request_t receiveRequest();
 
 void printMessage(message_t * message);
 
+void clear();
+
 #endif
 

@@ -33,5 +33,7 @@ void sendRequest(request_t req);
 
 request_t receiveRequest();
 
+void printMessage(message_t * message);
+
 #endif
 

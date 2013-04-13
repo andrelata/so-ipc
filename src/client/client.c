@@ -50,10 +50,10 @@ int toSession(){
 	printf("Que accion desea realizar?\n\t%d.Obtener informacion de las sesiones existentes\n\t%d.Unirse a una sesion\n\t%d.Crear una nueva sesion\n\t%d.Cambiar de usuario\n\t%d.Desconectarse\n\nPara elejir una accion ingrese el numero correspondiente:\n", GET_SESSIONS, JOIN_SESSION, CREATE_SESSION, CHANGE_USER, DISCONNECT);
 	
 	int eleccion = 0;
-	int cant = scanf("%d", &eleccion);
-	/*while(cant!=0){
-		getchar();
-	}*/
+	while ( scanf("%d", &eleccion) < 1){
+		clear();
+		printf("Ingrese un numero:\n");
+	}
 	char * string;
 	switch(eleccion) {
 		case GET_SESSIONS:	
@@ -64,7 +64,7 @@ int toSession(){
 			printf("Ingrese el ID de la sesion\n");
 			int sessionID = 0;
 			while(scanf("%d", &eleccion) < 1){
-				getchar();
+				clear();
 				printf("Ingrese un numero\n");
 			}
 			joinSession( sessionID );
@@ -75,7 +75,7 @@ int toSession(){
 			char sessionName[20];
 			while(scanf("%s", sessionName) < 1){
 				printf("Ingrese un nombre para la\n");
-				getchar();
+				clear();
 			}
 			createSession( sessionName );
 			return CREATE_SESSION;
@@ -115,10 +115,10 @@ void chat(){
 	int eleccion = SEND_TEXT;
 	int estado;
 	while(eleccion!=DISCONNECT){
-		int cant = scanf("%d", &eleccion);
-		/*while(cant!=0){
-			getchar();
-		}*/
+		while ( scanf("%d", &eleccion) < 1){
+			clear();
+			printf("Ingrese un numero:\n");
+		}
 		char string[50];
 		switch(eleccion) {
 			case SEND_TEXT:	
@@ -131,7 +131,7 @@ void chat(){
 				printf("Ingrese el nuevo estado\n");
 				int sessionID = 0;
 				while(scanf("%d", &estado) < 1){
-					getchar();
+					clear();
 					printf("Ingrese un numero\n");
 				}
 				changeState( estado );
@@ -315,6 +315,12 @@ message_t * readText(){
 	strncpy(message->messageBody, req.message, MESS_LENGTH);
 	message->time = req.time;
 	return message;
+}
+
+void
+clear (void)
+{    
+	while ( getchar() != '\n' );
 }
 
 
