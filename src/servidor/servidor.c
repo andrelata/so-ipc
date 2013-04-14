@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <sys/types.h> 
 #include <sys/stat.h>
+#include <time.h>
 
 #include "../defs.h"
 #include "./servidor_fifo.h"
@@ -69,7 +70,7 @@ parserRequest(request_t request){
 		case EXIT_SESSION:
 			//exitSession
 			//parametro PID
-			exitSession(request.PID);
+			exitSession(request.PID, &user);
 			break;
 		case CREATE_SESSION:
 			//createSession
@@ -79,17 +80,17 @@ parserRequest(request_t request){
 		case SEND_TEXT: 
 			//sentText 
 			//parametros PID, char text[50]
-			sentText(request.PID, request.message);
+			sentText(request.PID, request.message, &user);
 			break;
 		case CHECK_PRICE:
 			//checkPrice
 			//parametros PID
-			checkPrice(request.PID);
+			checkPrice(request.PID, &user);
 			break;
 		case CHANGE_STATE:
 			//changeState
 			//parametros PID, int state
-			changeState(request.PID, request.par1);
+			changeState(request.PID, request.par1, &user);
 			break;
 		case CHECK_SESSION:
 			//checkSession
@@ -119,7 +120,7 @@ connectClient(pid_t PID, char * name, user_t * user){
 	}else{
 		request.reqID = OK;
 	}
-	request.par1 = 0;
+	//request.par1 = 0;
 	
 	sendRequest(request, PID);	
 }
@@ -127,10 +128,36 @@ connectClient(pid_t PID, char * name, user_t * user){
 void 
 disconnect(pid_t PID){
 	
+	//liberar memoria del usuario
+	//y cortar comunicacion con este cliente
+	
 }
 
+//SIN PROBAR
 void getSession(pid_t PID)
 {
+	request_t request;
+	int i;
+	char * sessions;
+	
+	for(i = 0; i < MAXSESSION; i++)
+	{
+		if(session[i].id == -1)
+		{
+			break;
+		}
+		request.reqID = ANS;
+		request.par1 = OK;
+		//donde guardo los nombres de las diferentes sessiones
+	}
+	if(i == 0)
+	{
+		request.par1 = ERROR;
+		strcpy(request.message,"No hay sesiones creadas");
+		
+	}
+	sendRequest(request,PID);
+		
 }
 
 void 
@@ -139,7 +166,7 @@ joinSession(pid_t PID, int n, user_t * user){
 	request_t request;
 	int i;
 	
-	request.reqID = 3;
+	//request.reqID = 3;
 	for(i = 0; i < MAXSESSION; i++)
 	{
 		if(session[i].id == n)
@@ -147,18 +174,55 @@ joinSession(pid_t PID, int n, user_t * user){
 			user->sessionID = n;
 			user->state = 2; /*en sesion*/
 			session[i].users += 1; 
-			request.par1 = 0;
+			//request.par1 = 0;
+			request.reqID = OK;
 			break;
 		}
 	}
 	if(i == MAXSESSION)
-		request.par1 = 1;
+		//request.par1 = 1;
+		request.reqID = ERROR;
 	sendRequest(request, PID);
 	
 }
-
+//FALTA PROBAR. ESTA HECHA RE CABEZA
 void 
-exitSession(pid_t PID){
+exitSession(pid_t PID, user_t * user){
+	request_t request;
+	int i, j;
+	
+	if(user->sessionID == -1)
+		request.reqID = ERROR;
+	else 
+	{
+		if(session[user->sessionID].users == 1)
+		{
+			for(i = 0; i < MAXSESSION; i++)
+			{
+				if(session[i].id == user->sessionID)
+					break;
+			}
+			for(i;i<MAXSESSION;i++)
+			{
+				for(j=i+1; j < MAXSESSION; j++)
+				{
+					if(session[j].id != -1)
+					{
+						session[i] = session[j];
+					}else {
+						break;
+					}
+				}
+			}
+			session[i].id = -1;
+		}else {
+			session[user->sessionID].users -= 1;
+		}
+		request.reqID = OK;
+	}
+	
+	sendRequest(request,PID);
+	
 }
 
 void 
@@ -172,14 +236,15 @@ createSession(pid_t PID, char * name){
 	for(i = 0; i < MAXSESSION; i++)
 	{
 		if(strcmp(session[i].name, name) == 0){
-			request.reqID = ERROR;
+			request.reqID = ANS;
+			request.par1 = ERROR;
 			strcpy(request.message,"Ya existe una sesion con ese nombre");
 			break;
 		}
 		if(session[i].id == -1)
 			break;	
 	}
-	if(request.par1 != ERROR && i < MAXSESSION)
+	if(request.reqID != ERROR && i < MAXSESSION)
 	{	
 		session[i].id = i;
 		strcpy(session[i].name,name);
@@ -191,26 +256,59 @@ createSession(pid_t PID, char * name){
 }
 
 
-
+//SIN PROBAR
 void 
-sentText(pid_t PID, char * message){
+sentText(pid_t PID, char * message, user_t * user){
+	
+	request_t request;
+	
+	if(user->sessionID != -1)
+	{
+		request.reqID = SEND_TEXT;
+		strcpy(request.name, user->nickname);
+		strcpy(request.message, message);
+		request.time = time(NULL);
+		
+	}else
+	{
+		request.reqID = ANS;
+		request.par1 = ERROR;
+		strcpy(request.message, "No puede mandar un mensaje si no esta en sesion");
+	}
+	
+	sendRequest(request,PID);
 	
 }
-
+//SIN PROBAR
 void 
-checkPrice(pid_t PID){
+checkPrice(pid_t PID, user_t * user){
+	request_t request;
+	
+	request.reqID = SEND_PRICE;
+	time_t actualTime = time(NULL);
+	double time = difftime(actualTime, user->time);
+	request.price = time * PRICE;
+	
+	sendRequest(request,PID);
 }
 
+//SIN PROBAR
 void 
-changeState(pid_t PID, int n){
+changeState(pid_t PID, int n, user_t * user){
+	request_t request;
+	
+	user->state = n;
+	request.reqID = OK;
+	
+	sendRequest(request,PID);
 }
 
 void 
 checkSession(pid_t PID, user_t * user){
 	request_t request;
 	int i;
-	request.reqID = 3;
-	request.par1 = 2;
+	request.reqID = ANS;
+	//request.par1 = 2;
 	
 	if(user->sessionID == -1)
 		strcpy(request.message, "No tiene sesion asignada");

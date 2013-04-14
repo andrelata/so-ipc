@@ -44,7 +44,8 @@ receiveRequest(){
 	}
 }
 
-
+//GONZA: no entiendo porque aca le mandas el ClientePID
+//cuando le podes mandar el PID por el request?
 void 
 sendRequest(request_t request, int clientPID){
 

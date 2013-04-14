@@ -153,8 +153,8 @@ void printMessage(message_t * message){
 	printf("%s dijo: %s\t\t a las %s\n", message->nickname, message->messageBody, ctime(&(message->time)));
 }
 
-	int connect(char nick[]){
-		request_t req;
+int connect(char nick[]){
+	request_t req;
 	req.reqID = CONNECT;
 	req.PID = getpid();
 	strncpy(req.name, nick, NAME_LENGTH);

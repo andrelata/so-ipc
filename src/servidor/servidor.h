@@ -17,15 +17,15 @@ void getSession(pid_t PID);
 
 void joinSession(pid_t PID, int n, user_t * user);
 
-void exitSession(pid_t PID);
+void exitSession(pid_t PID, user_t * user);
 
 void createSession(pid_t PID, char * name);
 
-void sentText(pid_t PID, char * message);
+void sentText(pid_t PID, char * message, user_t * user);
 
-void checkPrice(pid_t PID);
+void checkPrice(pid_t PID, user_t * user);
 
-void changeState(pid_t PID, int n);
+void changeState(pid_t PID, int n, user_t * user);
 
 void parserRequest(request_t request);
 
