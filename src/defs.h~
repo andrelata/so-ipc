@@ -18,25 +18,18 @@
 #define	CHANGE_STATE	10
 #define	SEND_PRICE	11
 #define	CHANGE_USER	12
+#define CHECK_SESSION	13
+#define ANS		14
 
 #define NAME_LENGTH	20
 #define	MESS_LENGTH	50
+#define PRICE 0.2
 
+//GONZA: la struct message me parece que esta al pedo
+//con request alcanza porque almacena la misma info
 
-typedef struct user {
-	char nickname[NAME_LENGTH];
-	int state;
-	int sessionID; // #define
-	time_t time;
-	pid_t userID;
-} user_t;
-
-typedef struct session {
-	int id;
-	char name[NAME_LENGTH];
-	int users;
-} session_t;
-
+//Andre: al final decidi dejar esta estructura porque no me parece muy prolijo que el request ande dando vueltas
+// por las funciones de client.c solo para transportar un mensaje
 typedef struct message {
 	char nickname[NAME_LENGTH];
 	char messageBody[MESS_LENGTH]; //(o algo asi, no quise repetir message)

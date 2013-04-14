@@ -100,8 +100,10 @@ int toSession(){
 void* printText(void* unused){
 
 	message_t * message;
+	printf("en el thread\n");
 	while( (message = readText()) != NULL){
 		printMessage(message);
+		free(message);
 	}
 	printf("Thread terminado\n");
 	return NULL;
@@ -113,10 +115,10 @@ void chat(){
 	/* Create a new thread. The new thread will run the printText
 	function. */
 	pthread_create (&thread_id, NULL, &printText, NULL);
-	printf("Que accion desea realizar?\n\t%d.Ingresar texto\n\t%d.Cambiar de estado\n\t%d.Desconectarse\n\nPara elejir una accion ingrese el numero correspondiente:\n", SEND_TEXT, CHANGE_STATE, DISCONNECT);
 	int eleccion = SEND_TEXT;
 	int estado;
-	while(eleccion!=DISCONNECT){
+	while(eleccion!=EXIT_SESSION){
+		printf("Que accion desea realizar?\n\t%d.Ingresar texto\n\t%d.Cambiar de estado\n\t%d.Salir de sesion\n\nPara elejir una accion ingrese el numero correspondiente:\n", SEND_TEXT, CHANGE_STATE, EXIT_SESSION);
 		while ( scanf("%d", &eleccion) < 1){
 			clear();
 			printf("Ingrese un numero:\n");
@@ -139,8 +141,8 @@ void chat(){
 				changeState( estado );
 				break;
 	
-			case DISCONNECT:
-				disconnect();
+			case EXIT_SESSION:
+				exitSession();
 				break;
 	
 			default:
@@ -152,11 +154,11 @@ void chat(){
 }
 
 void printMessage(message_t * message){
-	printf("%s dijo: %s\t\t a las %s\n", message->nickname, message->messageBody, ctime(&(message->time)));
+	printf("%s dijo: %s\t\t\t %s\n", message->nickname, message->messageBody, ctime(&(message->time)));
 }
 
 int connect(char nick[]){
-	request_t req;
+	request_t req, req2;
 	req.reqID = CONNECT;
 	req.PID = getpid();
 	strncpy(req.name, nick, NAME_LENGTH);
@@ -168,9 +170,9 @@ int connect(char nick[]){
 	if( openCChannel() == ERROR){
 		return ERROR;
 	}
-	req = receiveRequest();
-	if(req.reqID==ERROR){
-		printf("Error: %s\n", req.message);
+	req2 = receiveRequest();
+	if(req2.reqID==ERROR){
+		printf("Error: %s\n", req2.message);
 		return ERROR;
 	}
 
@@ -272,11 +274,11 @@ int sendText(char message[]){
 	req.PID = getpid();
 	strcpy(req.message, message);
 	sendRequest(req);
-	req = receiveRequest();
+	/*req = receiveRequest();
 	if(req.reqID==ERROR){
 		printf("Error: %s\n", req.message);
 		return ERROR;
-	}
+	}*/
 	return OK;
 }
 
@@ -309,12 +311,13 @@ int changeState(int state){
 message_t * readText(){
 	request_t req;
 	req = receiveRequest();
+	message_t mess;
 	if(req.reqID == ERROR){
 		return NULL;
 	}else if(req.reqID != SEND_TEXT){
 		printf("Error: %s\n", req.message);
 	}
-	message_t * message;
+	message_t * message = malloc(sizeof mess);
 	strncpy(message->nickname,req.name, NAME_LENGTH);
 	strncpy(message->messageBody, req.message, MESS_LENGTH);
 	message->time = req.time;

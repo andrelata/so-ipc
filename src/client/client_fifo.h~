@@ -4,6 +4,7 @@
 #include "../defs.h"
 
 #define SERVER_NAME "/tmp/fifosrv"
+#define CLIENT_NAME "/tmp/fifo."
 
 int createServerChannel();
 

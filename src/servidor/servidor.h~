@@ -12,7 +12,7 @@ void connectClient(pid_t PID, char * name);
 
 void disconnect(pid_t PID);
 
-void checkSession(pid_t PID);
+void checkSession(pid_t PID, user_t * user);
 
 void getSession(pid_t PID);
 

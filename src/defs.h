@@ -5,45 +5,31 @@
 
 // enum??
 
-#define ERROR		0
-#define	OK		1
-#define	CONNECT		2
-#define	DISCONNECT	3
-#define	GET_SESSIONS	4
-#define	JOIN_SESSION	5
-#define	EXIT_SESSION	6
-#define CREATE_SESSION	7
-#define	SEND_TEXT	8
-#define	CHECK_PRICE	9
-#define	CHANGE_STATE	10
-#define	SEND_PRICE	11
-#define	CHANGE_USER	12
-#define CHECK_SESSION	13
-#define ANS				14
+#define ERROR		1
+#define	OK		2
+#define	CONNECT		3
+#define	DISCONNECT	4
+#define	GET_SESSIONS	5
+#define	JOIN_SESSION	6
+#define	EXIT_SESSION	7
+#define CREATE_SESSION	8
+#define	SEND_TEXT	9
+#define	CHECK_PRICE	10
+#define	CHANGE_STATE	11
+#define	SEND_PRICE	12
+#define	CHANGE_USER	13
+#define CHECK_SESSION	14
+#define ANS		15
 
 #define NAME_LENGTH	20
 #define	MESS_LENGTH	50
 #define PRICE 0.2
 
-//GONZA: estas 2 no hace falta que esten aca, porque el unico que las tiene
-//que conocer es servidor, y estan incluidas en serverStruct
-
-typedef struct user {
-	char nickname[NAME_LENGTH];
-	int state;
-	int sessionID; // #define
-	time_t time;
-	pid_t userID;
-} user_t;
-
-typedef struct session {
-	int id;
-	char name[NAME_LENGTH];
-	int users;
-} session_t;
-
 //GONZA: la struct message me parece que esta al pedo
 //con request alcanza porque almacena la misma info
+
+//Andre: al final decidi dejar esta estructura porque no me parece muy prolijo que el request ande dando vueltas
+// por las funciones de client.c solo para transportar un mensaje
 typedef struct message {
 	char nickname[NAME_LENGTH];
 	char messageBody[MESS_LENGTH]; //(o algo asi, no quise repetir message)

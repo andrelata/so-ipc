@@ -8,6 +8,7 @@
 
 #include "../defs.h"
 #include "./servidor_fifo.h"
+#include "./servidorStruct.h"
 
 int fdS;
 
@@ -54,7 +55,10 @@ sendRequest(request_t request){
 	int fdC;
 	int i;
 
+	printf("request.pid: %d, fdC: %d\n", request.PID, fdC);
+
 	for(i=0;i<MAX_USERS;i++){
+		printf("userID: %d, fd: %d\n", fifos[i].pid, fifos[i].fd);
 		if(fifos[i].pid == request.PID){
 			fdC = fifos[i].fd;
 		}
@@ -116,10 +120,12 @@ int
 closeCChannel(int pid){
 	int i;
 	for(i=0;i<MAX_USERS;i++){
-		if(fifos[i].pid != pid){
+		if(fifos[i].pid == pid){
+			printf("cerrando canal: %d\n", fifos[i].fd);
 			close(fifos[i].fd);
 		}
 	}
+	return OK;
 }
 
 /*

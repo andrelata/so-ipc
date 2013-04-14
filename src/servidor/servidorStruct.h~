@@ -4,11 +4,11 @@
 #include "../defs.h"
 
 typedef struct user {
-	pid_t userID;
 	char nickname[NAME_LENGTH];
 	int state;
 	int sessionID; // -1 si esta libre
 	time_t time;
+	pid_t userID;
 } user_t;
 
 typedef struct session {

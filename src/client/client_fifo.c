@@ -22,9 +22,10 @@ int openSChannel(){
 int openCChannel(){
 	char pid[20];
 	sprintf(pid, "%d\0", getpid());
+	printf("variableeee: %d: \n", fdC);
 	char clientPath2[20] = CLIENT_NAME;
 	char * clientPath = strcat(clientPath2, pid);
-	printf("clientPath: %s\n", clientPath);
+	printf("clientPath: %s %s\n", clientPath, clientPath2);
 	if( (fdC = open(clientPath, O_RDONLY)) < 0 ){
 		return ERROR;
 	}

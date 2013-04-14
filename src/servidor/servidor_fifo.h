@@ -17,6 +17,8 @@ request_t receiveRequest();
 
 int closeChannel();
 
+int closeCChannel(int pid);
+
 typedef struct cFifos {
 	int pid;
 	int fd;

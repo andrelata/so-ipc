@@ -27,13 +27,15 @@ int checkPrice();
 
 int changeState(int state);
 
-message_t * readText();
+message_t readText();
 
 void sendRequest(request_t req);
 
 request_t receiveRequest();
 
 void printMessage(message_t * message);
+
+void clear();
 
 #endif
 
