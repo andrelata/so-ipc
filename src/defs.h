@@ -19,10 +19,14 @@
 #define	SEND_PRICE	11
 #define	CHANGE_USER	12
 #define CHECK_SESSION	13
+#define ANS				14
 
 #define NAME_LENGTH	20
 #define	MESS_LENGTH	50
+#define PRICE 0.2
 
+//GONZA: estas 2 no hace falta que esten aca, porque el unico que las tiene
+//que conocer es servidor, y estan incluidas en serverStruct
 
 typedef struct user {
 	char nickname[NAME_LENGTH];
@@ -38,6 +42,8 @@ typedef struct session {
 	int users;
 } session_t;
 
+//GONZA: la struct message me parece que esta al pedo
+//con request alcanza porque almacena la misma info
 typedef struct message {
 	char nickname[NAME_LENGTH];
 	char messageBody[MESS_LENGTH]; //(o algo asi, no quise repetir message)
