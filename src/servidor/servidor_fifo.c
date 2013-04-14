@@ -55,10 +55,7 @@ sendRequest(request_t request){
 	int fdC;
 	int i;
 
-	printf("request.pid: %d, fdC: %d\n", request.PID, fdC);
-
 	for(i=0;i<MAX_USERS;i++){
-		printf("userID: %d, fd: %d\n", fifos[i].pid, fifos[i].fd);
 		if(fifos[i].pid == request.PID){
 			fdC = fifos[i].fd;
 		}

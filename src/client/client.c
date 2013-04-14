@@ -65,7 +65,7 @@ int toSession(){
 		case JOIN_SESSION:	
 			printf("Ingrese el ID de la sesion\n");
 			int sessionID = 0;
-			while(scanf("%d", &eleccion) < 1){
+			while(scanf("%d", &sessionID) < 1){
 				clear();
 				printf("Ingrese un numero\n");
 			}
@@ -216,7 +216,9 @@ int getSessions(){
 		printf("Las sesiones abiertas son:\n\nID\t\tNombre\n\n");
 		for(i=0;i<reqRec.par1;i++){
 			req = receiveRequest();
-			printf("%d\t\t%s\n", req.par1, req.name);
+			if(req.reqID == OK ){
+				printf("%d\t\t%s\n", req.par1, req.name);
+			}
 		}
 	}
 
@@ -244,11 +246,11 @@ int exitSession(){
 	req.reqID = EXIT_SESSION;
 	req.PID = getpid();
 	sendRequest(req);
-	req = receiveRequest();
+	/*req = receiveRequest();
 	if(req.reqID==ERROR){
 		printf("Error: %s\n", req.message);
 		return ERROR;
-	}
+	}*/
 	return OK;
 
 }

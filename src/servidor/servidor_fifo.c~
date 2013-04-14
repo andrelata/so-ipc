@@ -58,7 +58,6 @@ sendRequest(request_t request){
 	printf("request.pid: %d, fdC: %d\n", request.PID, fdC);
 
 	for(i=0;i<MAX_USERS;i++){
-		printf("userID: %d, fd: %d\n", fifos[i].pid, fifos[i].fd);
 		if(fifos[i].pid == request.PID){
 			fdC = fifos[i].fd;
 		}
@@ -123,6 +122,8 @@ closeCChannel(int pid){
 		if(fifos[i].pid == pid){
 			printf("cerrando canal: %d\n", fifos[i].fd);
 			close(fifos[i].fd);
+			fifos[i].pid = -1;
+			fifos[i].fd = 0;
 		}
 	}
 	return OK;

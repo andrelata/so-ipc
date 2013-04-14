@@ -235,6 +235,7 @@ void getSession(pid_t PID)
 		{
 			request.par1 = session[i].id;
 			strcpy(request.name,session[i].name);
+			sendRequest(request);
 		}
 	}
 		
@@ -292,25 +293,24 @@ exitSession(pid_t PID){
 				if(session[i].id == user[k].sessionID)
 					break;
 			}
+			i=i+1;
 			for(i;i<MAXSESSION;i++)
 			{
-				for(j=i+1; j < MAXSESSION; j++)
+				if(session[i].id != -1)
 				{
-					if(session[j].id != -1)
-					{
-						session[i] = session[j];
-					}else {
-						break;
-					}
+					session[i-1] = session[i];
+				}else {
+					session[i].id=-1;
+					break;
 				}
+
 			}
-			session[i].id = -1;
 		}else {
 			session[user[k].sessionID].users -= 1;
 		}
 		request.reqID = OK;
 	}
-	
+	request.reqID = ERROR;
 	sendRequest(request);
 	
 }
@@ -375,10 +375,13 @@ sentText(pid_t PID, char * message){
 		request.reqID = ERROR;
 		strcpy(request.message, "No puede mandar un mensaje si no esta en sesion");
 	}
+	
 	for(i = 0; i < MAX_USERS; i++)
 	{
+		
 		if(user[i].userID != -1 && user[i].sessionID == user[k].sessionID)
 		{
+			request.PID = user[i].userID;
 			sendRequest(request);
 		}
 	}
