@@ -11,10 +11,12 @@
 
 
 int main(){
-	int option;
+	int option = CHANGE_USER;
 
 	do{
-		makeConnection();
+		if(option == CHANGE_USER){
+			makeConnection();
+		}
 		do{
 			option = toSession();
 		}while(option == GET_SESSIONS);
@@ -22,7 +24,7 @@ int main(){
 		if(option==JOIN_SESSION || option == CREATE_SESSION){
 			chat();
 		}
-	}while(option != CHANGE_USER);
+	}while(option != DISCONNECT);
 
 	return 0;
 	
@@ -180,7 +182,9 @@ int disconnect(){
 	req.reqID = DISCONNECT;
 	req.PID = getpid();
 	sendRequest(req);
+	printf("holsaa\n");
 	req = receiveRequest();
+	printf("chauu\n");
 	if(req.reqID==ERROR){
 		printf("Error: %s\n", req.message);
 		return ERROR;

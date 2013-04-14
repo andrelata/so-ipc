@@ -120,7 +120,6 @@ closeCChannel(int pid){
 			close(fifos[i].fd);
 		}
 	}
-	return OK;
 }
 
 /*

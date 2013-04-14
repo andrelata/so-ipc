@@ -144,8 +144,6 @@ disconnect(pid_t PID){
 	}
 
 	closeCChanel(PID);
-
-	//TODO: terminar!
 	
 }
 
