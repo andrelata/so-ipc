@@ -68,7 +68,9 @@ int toSession(){
 				clear();
 				printf("Ingrese un numero\n");
 			}
-			joinSession( sessionID );
+			if(joinSession( sessionID )==ERROR){
+				eleccion=GET_SESSIONS;
+			}
 			break;
 
 		case CREATE_SESSION: 

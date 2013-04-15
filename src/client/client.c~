@@ -53,7 +53,7 @@ int toSession(){
 	int eleccion = 0;
 	while ( scanf("%d", &eleccion) < 1){
 		clear();
-		printf("Ingrese un numero:\n");
+		printf("Ingrese el numero de opcion:\n");
 	}
 	char * string;
 	switch(eleccion) {
@@ -68,7 +68,9 @@ int toSession(){
 				clear();
 				printf("Ingrese un numero\n");
 			}
-			joinSession( sessionID );
+			if(joinSession( sessionID )==ERROR){
+				eleccion==GET_SESSIONS;
+			}
 			break;
 
 		case CREATE_SESSION: 

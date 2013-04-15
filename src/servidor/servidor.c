@@ -182,14 +182,7 @@ disconnect(pid_t PID){
 
 	int k = getUserIndex(PID);
 
-
-	for(i = 0; i < MAXSESSION; i++)
-	{
-		if(session[i].id == PID)
-		{
-			session[i].id = -1;
-		}
-	}
+	user[k].userID = -1;
 
 	closeCChannel(PID);
 }
