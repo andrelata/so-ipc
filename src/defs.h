@@ -23,7 +23,7 @@
 
 #define NAME_LENGTH	20
 #define	MESS_LENGTH	50
-#define PRICE 0.2
+#define PRICE 0.01
 
 //GONZA: la struct message me parece que esta al pedo
 //con request alcanza porque almacena la misma info

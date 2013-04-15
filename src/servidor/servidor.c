@@ -252,8 +252,11 @@ joinSession(pid_t PID, int n){
 		}
 	}
 	if(i == MAXSESSION)
+	{
 		//request.par1 = 1;
 		request.reqID = ERROR;
+		strcpy(request.message, "No existe esa sesion");
+	}
 	sendRequest(request);
 	
 }

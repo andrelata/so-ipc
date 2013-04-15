@@ -41,6 +41,7 @@ receiveRequest(){
 	{
 		/* Aca recibo lo que manda el cliente */
 		printf("Servidor recibe: %d\n", request.reqID);
+		//printf("msje: %s\n", request.message);
 		return request;
 	}
 }
