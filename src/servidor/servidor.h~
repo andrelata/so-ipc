@@ -74,8 +74,7 @@ void checkPrice(pid_t PID);
 
 /**
 Parametros: PID del usuario, nuevo estado
-cambia el estado del usuario por el nuevo.
-le manda un request al usuario notificando resultados la operacion
+
 */
 void changeState(pid_t PID, int n);
 
