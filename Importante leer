@@ -1,0 +1,9 @@
+Instrucciones para correr el programa:
+
+1. Correr el make clean en la carpeta src/client, y despues el make
+
+2. Correr el make clean en la carpeta src/servidor y despues el make
+
+3. Ejecutar el servidor en una terminal ./servidor
+
+4. Ejecutar el cliente en una terminal ./cliente
