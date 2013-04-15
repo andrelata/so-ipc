@@ -128,7 +128,9 @@ void chat(){
 		switch(eleccion) {
 			case SEND_TEXT:	
 				printf("Ingrese texto\n");
-				scanf("%s", string);
+				clear();
+				fgets(string, sizeof string, stdin);
+				//scanf("%s", string);
 				sendText(string);
 				break;
 	

@@ -69,7 +69,7 @@ int toSession(){
 				printf("Ingrese un numero\n");
 			}
 			if(joinSession( sessionID )==ERROR){
-				eleccion==GET_SESSIONS;
+				eleccion=GET_SESSIONS;
 			}
 			break;
 
@@ -128,6 +128,7 @@ void chat(){
 		switch(eleccion) {
 			case SEND_TEXT:	
 				printf("Ingrese texto\n");
+				//fgets(string, sizeof string, stdin);
 				scanf("%s", string);
 				sendText(string);
 				break;

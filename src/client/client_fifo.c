@@ -52,7 +52,7 @@ receiveRequest(){
 	if(n = read(fdC, &request, sizeof request ) > 0)
 	{
 		/* Aca recibo lo que manda el cliente */
-		printf("Servidor recibe: %d\n", request.reqID);
+		//printf("Servidor recibe: %d\n", request.reqID);
 		return request;
 	}
 }
