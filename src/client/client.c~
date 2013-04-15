@@ -324,7 +324,6 @@ int getRequest(){
 		return OK;
 	}else if(req.reqID != SEND_TEXT){
 		printf("Error: %s\n", req.message);
-		return ERROR;
 	}
 	message_t message;
 	strncpy(message.nickname,req.name, NAME_LENGTH);

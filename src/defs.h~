@@ -33,6 +33,11 @@ typedef struct message {
 	time_t time;
 } message_t;
 
+/*struct request{
+	int reqID;
+	void * struct;
+}*/
+
 typedef struct request{
 	int reqID;
 	pid_t PID;

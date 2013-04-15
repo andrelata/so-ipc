@@ -96,6 +96,7 @@ connectClient(pid_t PID, char * name){
 	request.PID = PID; 
 
 	int i;
+	//char string[30];
 
 	if( createChannel(PID) == -1 ){
 		request.reqID = ERROR;
@@ -159,6 +160,7 @@ disconnect(pid_t PID){
 	closeCChannel(PID);
 }
 
+//SIN PROBAR
 void getSession(pid_t PID)
 {
 	request_t request;
@@ -170,7 +172,7 @@ void getSession(pid_t PID)
 	
 	for(i = 0; i < MAXSESSION; i++)
 	{
-		if(session[i].id != EMPTY)
+		if(session[i].id != -1)
 		{
 			count++;
 		}

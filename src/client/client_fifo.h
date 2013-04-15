@@ -6,9 +6,7 @@
 #define SERVER_NAME "/tmp/fifosrv"
 #define CLIENT_NAME "/tmp/fifo"
 
-int createServerChannel();
-
-int createChannel(char * client_name);
+int openCChannel();
 
 void sendRequest(request_t request);
 

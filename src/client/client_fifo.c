@@ -32,17 +32,6 @@ int openCChannel(){
 	return OK;
 }
 
-int 
-createServerChannel(){
-	if ( access(SERVER_NAME, 0) == -1 && mknod(SERVER_NAME, S_IFIFO|0666, 0) == -1 )
-	{
-		printf("(A) Error al abrir el fifo del servidor");
-		return -1;
-	}
-	fdS = open(SERVER_NAME, O_RDONLY);
-	return 0;
-}
-
 request_t 
 receiveRequest(){
 	int n;
@@ -61,18 +50,6 @@ void
 sendRequest(request_t request){
 	
 	write(fdS, &request, sizeof request);
-}
-
-int
-createChannel(char * client_name){
-
-	if ( access(client_name, 0) == -1 && mknod(client_name, S_IFIFO|0666, 0) == -1 )
-	{
-		printf("Error al abrir el fifo del cliente");
-		return -1;
-	}
-	fdC = open(client_name, O_WRONLY);
-	return 0;
 }
 
 int

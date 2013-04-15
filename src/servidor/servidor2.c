@@ -30,14 +30,14 @@ main(int argc, char **argv)
 	int i;
 	for(i = 0; i < MAXSESSION; i++)
 	{
-		session[i].id = EMPTY; /*indica que la session esta vacia*/
+		session[i].id = -1; /*indica que la session esta vacia*/
 	}
 
 	//inicializacion de usuarios
 
 	for(i = 0; i < MAX_USERS; i++)
 	{
-		user[i].userID = EMPTY;
+		user[i].userID = -1;
 	}
 
 	printf("Iniciando el servidor. \n");
@@ -96,6 +96,7 @@ connectClient(pid_t PID, char * name){
 	request.PID = PID; 
 
 	int i;
+	//char string[30];
 
 	if( createChannel(PID) == -1 ){
 		request.reqID = ERROR;
@@ -105,7 +106,7 @@ connectClient(pid_t PID, char * name){
 
 	for(i = 0; i < MAX_USERS; i++)
 	{
-		if(user[i].userID != EMPTY && strcmp(user[i].nickname, name) == 0)
+		if(user[i].userID != -1 && strcmp(user[i].nickname, name) == 0)
 		{
 			request.reqID = ERROR;
 			//sprintf(string,"El nickname %s ya esta siendo utilizado, elija otro\n", name);
@@ -121,7 +122,7 @@ connectClient(pid_t PID, char * name){
 
 	for(i = 0; i < MAX_USERS && j==-1; i++)
 	{
-		if(user[i].userID == EMPTY)
+		if(user[i].userID == -1)
 		{
 			j=i;
 		}
@@ -138,7 +139,7 @@ connectClient(pid_t PID, char * name){
 	strcpy(user[j].nickname, name);
 	user[j].userID = PID;
 	user[j].state = 1; /*conectado = 1*/
-	user[j].sessionID = EMPTY; /*no tiene session asignada = -1*/
+	user[j].sessionID = -1; /*no tiene session asignada = -1*/
 	user[j].time = time(NULL);
 	
 	sendRequest(request);	
@@ -154,11 +155,12 @@ disconnect(pid_t PID){
 
 	int k = getUserIndex(PID);
 
-	user[k].userID = EMPTY;
+	user[k].userID = -1;
 
 	closeCChannel(PID);
 }
 
+//SIN PROBAR
 void getSession(pid_t PID)
 {
 	request_t request;
@@ -170,7 +172,7 @@ void getSession(pid_t PID)
 	
 	for(i = 0; i < MAXSESSION; i++)
 	{
-		if(session[i].id != EMPTY)
+		if(session[i].id != -1)
 		{
 			count++;
 		}
@@ -187,7 +189,7 @@ void getSession(pid_t PID)
 
 	for(i = 0; i < MAXSESSION; i++)
 	{
-		if(session[i].id != EMPTY)
+		if(session[i].id != -1)
 		{
 			request.par1 = session[i].id;
 			strcpy(request.name,session[i].name);
@@ -237,14 +239,14 @@ exitSession(pid_t PID){
 
 	int k = getUserIndex(PID);
 	
-	if(user[k].sessionID == EMPTY){
+	if(user[k].sessionID == -1){
 		request.reqID = ERROR;
 		strcpy(request.message,"El usuario no se encuentra en ninguna sesion\n");
 	}else 
 	{
 		if(session[user[k].sessionID].users == 1)
 		{
-			session[user[k].sessionID].id = EMPTY;
+			session[user[k].sessionID].id = -1;
 			session[user[k].sessionID].users = 0;
 		}else {
 			session[user[k].sessionID].users -= 1;
@@ -275,7 +277,7 @@ createSession(pid_t PID, char * name){
 			strcpy(request.message,"Ya existe una sesion con ese nombre");
 			break;
 		}
-		if(session[i].id == EMPTY)
+		if(session[i].id == -1)
 			break;	
 	}
 	if(request.reqID != ERROR && i < MAXSESSION)
@@ -301,7 +303,7 @@ sentText(pid_t PID, char * message){
 
 	int k = getUserIndex(PID);
 	
-	if(user[k].sessionID != EMPTY)
+	if(user[k].sessionID != -1)
 	{
 		request.reqID = SEND_TEXT;
 		strcpy(request.name, user[k].nickname);
@@ -317,7 +319,7 @@ sentText(pid_t PID, char * message){
 	for(i = 0; i < MAX_USERS; i++)
 	{
 		
-		if(user[i].userID != EMPTY && user[i].sessionID == user[k].sessionID)
+		if(user[i].userID != -1 && user[i].sessionID == user[k].sessionID)
 		{
 			request.PID = user[i].userID;
 			sendRequest(request);
@@ -366,7 +368,7 @@ checkSession(pid_t PID){
 
 	int k = getUserIndex(PID);
 	
-	if(user[k].sessionID == EMPTY)
+	if(user[k].sessionID == -1)
 		strcpy(request.message, "No tiene sesion asignada");
 	else if (user[k].state = 2)
 		strcpy(request.message, session[user->sessionID].name);
