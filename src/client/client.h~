@@ -27,7 +27,7 @@ int checkPrice();
 
 int changeState(int state);
 
-message_t readText();
+message_t * readText();
 
 void sendRequest(request_t req);
 

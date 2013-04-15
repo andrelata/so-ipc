@@ -115,13 +115,9 @@ parserRequest(request_t request){
 void 
 connectClient(pid_t PID, char * name){
 
-	printf("connectPID: %d\n", PID); 
-
 	request_t request;
 
-	request.PID = PID;
-
-	printf("connectPID2: %d\n", request.PID); 
+	request.PID = PID; 
 
 	int i;
 	//char string[30];
@@ -131,7 +127,6 @@ connectClient(pid_t PID, char * name){
 	}else{
 		request.reqID = OK;
 	}
-	printf("holaaaa\n");
 
 	for(i = 0; i < MAX_USERS; i++)
 	{
@@ -146,7 +141,6 @@ connectClient(pid_t PID, char * name){
 			return;
 		}
 	}
-	printf("holaaaa2\n");
 
 	int j=-1;
 
@@ -157,7 +151,6 @@ connectClient(pid_t PID, char * name){
 			j=i;
 		}
 	}
-	printf("holaaaa3\n");
 
 	if(j==-1){
 		request.reqID = ERROR;
@@ -166,9 +159,8 @@ connectClient(pid_t PID, char * name){
 		closeCChannel(PID);
 		return;
 	}
-	printf("holaaaa4\n");
 
-	strcpy(user->nickname, name);
+	strcpy(user[j].nickname, name);
 	user[j].userID = PID;
 	user[j].state = 1; /*conectado = 1*/
 	user[j].sessionID = -1; /*no tiene session asignada = -1*/
@@ -207,26 +199,27 @@ void getSession(pid_t PID)
 {
 	request_t request;
 	int i;
+	int count = 0;
 	char * sessions;
 
 	request.PID = PID;
 	
 	for(i = 0; i < MAXSESSION; i++)
 	{
-		if(session[i].id == -1)
+		if(session[i].id != -1)
 		{
-			break;
+			count++;
 		}
 		request.reqID = OK;
 		//donde guardo los nombres de las diferentes sessiones
 	}
-	if(i == 0)
+	if(count == 0)
 	{
 		request.par1 = ERROR;
 		strcpy(request.message,"No hay sesiones creadas");
 		
 	}
-	request.par1 = i;
+	request.par1 = count;
 	sendRequest(request);
 
 	for(i = 0; i < MAXSESSION; i++)
@@ -288,23 +281,8 @@ exitSession(pid_t PID){
 	{
 		if(session[user[k].sessionID].users == 1)
 		{
-			for(i = 0; i < MAXSESSION; i++)
-			{
-				if(session[i].id == user[k].sessionID)
-					break;
-			}
-			i=i+1;
-			for(i;i<MAXSESSION;i++)
-			{
-				if(session[i].id != -1)
-				{
-					session[i-1] = session[i];
-				}else {
-					session[i].id=-1;
-					break;
-				}
-
-			}
+			session[user[k].sessionID].id = -1;
+			session[user[k].sessionID].users = 0;
 		}else {
 			session[user[k].sessionID].users -= 1;
 		}
@@ -339,7 +317,7 @@ createSession(pid_t PID, char * name){
 			break;	
 	}
 	if(request.reqID != ERROR && i < MAXSESSION)
-	{	
+	{
 		session[i].id = i;
 		strcpy(session[i].name,name);
 		session[i].users = 1;

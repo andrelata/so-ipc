@@ -20,7 +20,6 @@ int main(){
 		do{
 			option = toSession();
 		}while(option == GET_SESSIONS);
-		printf("option: %d\n", option);
 		if(option==JOIN_SESSION || option == CREATE_SESSION){
 			chat();
 		}
@@ -99,13 +98,8 @@ int toSession(){
 
 void* printText(void* unused){
 
-	message_t * message;
-	printf("en el thread\n");
-	while( (message = readText()) != NULL){
-		printMessage(message);
-		free(message);
+	while( (getRequest()) != ERROR){
 	}
-	printf("Thread terminado\n");
 	return NULL;
 }
 
@@ -183,10 +177,8 @@ int disconnect(){
 	request_t req;
 	req.reqID = DISCONNECT;
 	req.PID = getpid();
-	sendRequest(req);
-	printf("holsaa\n");
+	sendRequest(req);;
 	req = receiveRequest();
-	printf("chauu\n");
 	if(req.reqID==ERROR){
 		printf("Error: %s\n", req.message);
 		return ERROR;
@@ -289,11 +281,11 @@ int checkPrice(){
 	req.reqID = CHECK_PRICE;
 	req.PID = getpid();
 	sendRequest(req);
-	req = receiveRequest();
+	/*req = receiveRequest();
 	if(req.reqID==ERROR){
 		printf("Error: %s\n", req.message);
 		return ERROR;
-	}
+	}*/
 	return OK;
 }
 
@@ -310,20 +302,23 @@ int changeState(int state){
 	return OK;
 }
 
-message_t * readText(){
+int getRequest(){
 	request_t req;
 	req = receiveRequest();
-	message_t mess;
 	if(req.reqID == ERROR){
-		return NULL;
+		return ERROR;
+	}else if(req.reqID == SEND_PRICE){
+		printf("La tarifa actual es de %f pesos\n", req.price);
+		return OK;
 	}else if(req.reqID != SEND_TEXT){
 		printf("Error: %s\n", req.message);
 	}
-	message_t * message = malloc(sizeof mess);
-	strncpy(message->nickname,req.name, NAME_LENGTH);
-	strncpy(message->messageBody, req.message, MESS_LENGTH);
-	message->time = req.time;
-	return message;
+	message_t message;
+	strncpy(message.nickname,req.name, NAME_LENGTH);
+	strncpy(message.messageBody, req.message, MESS_LENGTH);
+	message.time = req.time;
+	printMessage(&message);
+	return OK;
 }
 
 void
