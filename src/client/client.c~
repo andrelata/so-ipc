@@ -48,7 +48,7 @@ void makeConnection(){
 
 int toSession(){
 
-	printf("Que accion desea realizar?\n\t%d.Obtener informacion de las sesiones existentes\n\t%d.Unirse a una sesion\n\t%d.Crear una nueva sesion\n\t%d.Cambiar de usuario\n\t%d.Desconectarse\n\nPara elejir una accion ingrese el numero correspondiente:\n", GET_SESSIONS, JOIN_SESSION, CREATE_SESSION, CHANGE_USER, DISCONNECT);
+	printf("Que accion desea realizar?\n\t%d.Obtener informacion de las sesiones existentes\n\t%d.Unirse a una sesion\n\t%d.Crear una nueva sesion\n\t%d.Consultar Tarifa\n\t%d.Cambiar de usuario\n\t%d.Desconectarse\n\nPara elejir una accion ingrese el numero correspondiente:\n", GET_SESSIONS, JOIN_SESSION, CREATE_SESSION, CHECK_PRICE, CHANGE_USER, DISCONNECT);
 	
 	int eleccion = 0;
 	while ( scanf("%d", &eleccion) < 1){
@@ -82,6 +82,11 @@ int toSession(){
 			return CREATE_SESSION;
 			break;
 
+		case CHECK_PRICE:
+			checkPrice();
+			getRequest();
+			break;
+
 		case CHANGE_USER:
 
 		case DISCONNECT:
@@ -112,10 +117,10 @@ void chat(){
 	int eleccion = SEND_TEXT;
 	int estado;
 	while(eleccion!=EXIT_SESSION){
-		printf("Que accion desea realizar?\n\t%d.Ingresar texto\n\t%d.Cambiar de estado\n\t%d.Salir de sesion\n\nPara elejir una accion ingrese el numero correspondiente:\n", SEND_TEXT, CHANGE_STATE, EXIT_SESSION);
+		printf("Que accion desea realizar?\n\t%d.Ingresar texto\n\t%d.Cambiar de estado\n\t%d.Consultar tarifa\n\t%d.Salir de sesion\n\nPara elejir una accion ingrese el numero correspondiente:\n", SEND_TEXT, CHANGE_STATE, CHECK_PRICE, EXIT_SESSION);
 		while ( scanf("%d", &eleccion) < 1){
 			clear();
-			printf("Ingrese un numero:\n");
+			printf("Ingrese el numero de opcion:\n");
 		}
 		char string[50];
 		switch(eleccion) {
@@ -134,6 +139,10 @@ void chat(){
 				}
 				changeState( estado );
 				break;
+
+			case CHECK_PRICE:
+				checkPrice();
+				break;
 	
 			case EXIT_SESSION:
 				exitSession();
@@ -148,7 +157,7 @@ void chat(){
 }
 
 void printMessage(message_t * message){
-	printf("%s dijo: %s\t\t\t %s\n", message->nickname, message->messageBody, ctime(&(message->time)));
+	printf("%s dijo: %s\t\t\t %s", message->nickname, message->messageBody, ctime(&(message->time)));
 }
 
 int connect(char nick[]){
@@ -309,7 +318,7 @@ int getRequest(){
 		return ERROR;
 	}else if(req.reqID == SEND_PRICE){
 		printf("La tarifa actual es de %f pesos\n", req.price);
-		return OK
+		return OK;
 	}else if(req.reqID != SEND_TEXT){
 		printf("Error: %s\n", req.message);
 	}
