@@ -22,7 +22,6 @@ int openSChannel(){
 int openCChannel(){
 	char pid[20];
 	sprintf(pid, "%d\0", getpid());
-	printf("variableeee: %d: \n", fdC);
 	char clientPath2[20] = CLIENT_NAME;
 	char * clientPath = strcat(clientPath2, pid);
 	printf("clientPath: %s %s\n", clientPath, clientPath2);

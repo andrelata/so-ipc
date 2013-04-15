@@ -80,8 +80,9 @@ int toSession(){
 				printf("Ingrese un nombre para la\n");
 				clear();
 			}
-			createSession( sessionName );
-			return CREATE_SESSION;
+			if(createSession(sessionName) == ERROR){
+				eleccion=GET_SESSIONS;
+			}
 			break;
 
 		case CHECK_PRICE:
@@ -190,12 +191,14 @@ int disconnect(){
 	request_t req;
 	req.reqID = DISCONNECT;
 	req.PID = getpid();
-	sendRequest(req);;
-	req = receiveRequest();
+	sendRequest(req);
+	sleep(1);
+	getRequest();
+	/*req = receiveRequest();
 	if(req.reqID==ERROR){
 		printf("Error: %s\n", req.message);
 		return ERROR;
-	}
+	}*/
 
 	if(closeChannel()==ERROR){
 		printf("Error\n");

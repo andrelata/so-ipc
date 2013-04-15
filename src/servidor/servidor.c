@@ -175,6 +175,8 @@ disconnect(pid_t PID){
 	request_t request;
 	int i;
 
+	checkPrice(PID);
+
 	request.PID = PID;
 	
 	//liberar memoria del usuario
@@ -304,8 +306,7 @@ createSession(pid_t PID, char * name){
 	for(i = 0; i < MAXSESSION; i++)
 	{
 		if(strcmp(session[i].name, name) == 0){
-			request.reqID = ANS;
-			request.par1 = ERROR;
+			request.reqID = ERROR;
 			strcpy(request.message,"Ya existe una sesion con ese nombre");
 			break;
 		}
