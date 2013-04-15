@@ -251,6 +251,7 @@ exitSession(pid_t PID){
 		}
 		request.reqID = OK;
 	}
+	user[k].sessionID = EMPTY;
 	request.reqID = ERROR;
 	sendRequest(request);
 	

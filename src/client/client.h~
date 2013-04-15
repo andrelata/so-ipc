@@ -122,7 +122,8 @@ void printMessage(message_t * message);
 
 /**
 Parametros: ninguno
-Limpia el buffer del teclado;
+
+Retorna OK si la operacion fue exitosa o ERROR si se produjo un error.
 */
 void clear();
 

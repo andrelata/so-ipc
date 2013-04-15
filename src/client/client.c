@@ -48,7 +48,7 @@ void makeConnection(){
 
 int toSession(){
 
-	printf("Que accion desea realizar?\n\t%d.Obtener informacion de las sesiones existentes\n\t%d.Unirse a una sesion\n\t%d.Crear una nueva sesion\n\t%d.Consultar Tarifa\n\t%d.Cambiar de usuario\n\t%d.Desconectarse\n\nPara elejir una accion ingrese el numero correspondiente:\n", GET_SESSIONS, JOIN_SESSION, CREATE_SESSION, CHECK_PRICE, CHANGE_USER, DISCONNECT);
+	printf("Que accion desea realizar?\n\t%d.Obtener informacion de las sesiones existentes\n\t%d.Unirse a una sesion\n\t%d.Crear una nueva sesion\n\t%d.Consultar Tarifa\n\t%d.Cambiar de usuario\n\t%d.Desconectarse\n\nPara elegir una accion ingrese el numero correspondiente:\n", GET_SESSIONS, JOIN_SESSION, CREATE_SESSION, CHECK_PRICE, CHANGE_USER, DISCONNECT);
 	
 	int eleccion = 0;
 	while ( scanf("%d", &eleccion) < 1){
@@ -118,7 +118,7 @@ void chat(){
 	int eleccion = SEND_TEXT;
 	int estado;
 	while(eleccion!=EXIT_SESSION){
-		printf("Que accion desea realizar?\n\t%d.Ingresar texto\n\t%d.Consultar tarifa\n\t%d.Salir de sesion\n\nPara elejir una accion ingrese el numero correspondiente:\n", SEND_TEXT, CHECK_PRICE, EXIT_SESSION);
+		printf("Que accion desea realizar?\n\t%d.Ingresar texto\n\t%d.Consultar tarifa\n\t%d.Salir de sesion\n\nPara elegir una accion ingrese el numero correspondiente:\n", SEND_TEXT, CHECK_PRICE, EXIT_SESSION);
 		while ( scanf("%d", &eleccion) < 1){
 			clear();
 			printf("Ingrese el numero de opcion:\n");
