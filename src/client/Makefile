@@ -8,7 +8,7 @@ CFLAGS = -Wall -O -Wuninitialized -g -lpthread
 .SILENT:
 
 $(TARGET): $(OBJS)
-	gcc -o $(TARGET) $(OBJS) $(CFLAGS)-lm
+	gcc -o $(TARGET) $(OBJS) -lm $(CFLAGS)
 
 $(OBJS) : $(SOURCES) 
 	gcc -c $(SOURCES)
