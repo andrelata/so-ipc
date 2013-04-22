@@ -163,7 +163,7 @@ disconnect(pid_t PID){
 		request.reqID = ERROR;
 	}
 
-	sendRequest(request);
+	sendrequest(request);
 }
 
 void getSession(pid_t PID)

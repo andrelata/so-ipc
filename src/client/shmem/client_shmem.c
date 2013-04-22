@@ -7,19 +7,15 @@
 #include <sys/stat.h>
 
 #include "../defs.h"
-#include "./servidor_shmem.h"
-#include "./servidorStruct.h"
+#include "./client_shmem.h"
 
 int fdS;
+int myPID;
 request_t *reqS;
 request_t *reqC;
-request_t buf;
 static sem_t *sd;
 
-int 
-createServerChannel(){
-	
-	
+int openSChannel(){
 	if ( (fdS = shm_open(SERVER_NAME, O_RDWR|O_CREAT, 0666)) == -1 )
 		fatal("sh_open");
 	ftruncate(fdS, SIZE);
@@ -28,11 +24,14 @@ createServerChannel(){
 	close(fdS);
 	reqC = reqS + 1;
 	initmutex();
-	reqS->reqID = EMPTY;
-	reqC->reqID = EMPTY;
+	myPID = getpid();
 
 	return 0;
+}
 
+int openCChannel(){
+
+	return OK;
 }
 
 request_t 
@@ -43,11 +42,11 @@ receiveRequest(){
 	while ( flag )
 	{
 		enter();
-		if ( reqS->reqID != EMPTY )
+		if ( reqC->reqID != EMPTY && reqC->PID == myPID)
 		{
-			printf("Servidor recibe: %d", reqS->reqID);
-			memcpy(&request, reqS, sizeof request);
-			reqS->reqID = EMPTY;
+			request.price = reqC->price;
+			memcpy(&request, reqC, sizeof request);
+			reqC->reqID = EMPTY;
 			flag = 0;
 		}
 		leave();
@@ -57,16 +56,16 @@ receiveRequest(){
 	return request;
 }
 
+
 void 
 sendRequest(request_t request){
 	int flag = 1;
-	printf("le envio al client: %d req: %d\n", request.PID, request.reqID);
 
 	while(flag){
 		enter();
-		if(reqC->reqID == EMPTY ){
-			reqC->price = request.price;
-			memcpy(reqC, &request, sizeof request);
+		if(reqS->reqID == EMPTY ){
+			reqS->price = request.price;
+			memcpy(reqS, &request, sizeof request);
 			flag = 0;
 		}
 		leave();
@@ -75,19 +74,7 @@ sendRequest(request_t request){
 }
 
 int
-createChannel(int clientPID){
-
-	return OK;
-}
-
-int
 closeChannel(){
-	return OK;
-}
-
-int
-closeCChannel(int pid){
-
 	return OK;
 }
 
@@ -103,6 +90,7 @@ leave(void)
 	sem_post(sd);
 }
 
+static sem_t *sd;
 
 void
 initmutex(void)
@@ -117,4 +105,3 @@ fatal(char *s)
 	perror(s);
 	exit(1);
 }
-

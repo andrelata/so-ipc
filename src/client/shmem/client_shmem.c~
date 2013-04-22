@@ -10,9 +10,9 @@
 #include "./client_shmem.h"
 
 int fdS;
+int myPID;
 request_t *reqS;
 request_t *reqC;
-request_t buf;
 static sem_t *sd;
 
 int openSChannel(){
@@ -24,6 +24,7 @@ int openSChannel(){
 	close(fdS);
 	reqC = reqS + 1;
 	initmutex();
+	myPID = getpid();
 
 	return 0;
 }
@@ -49,46 +50,41 @@ receiveRequest(){
 	while ( flag )
 	{
 		enter();
-		if ( reqcmp(&buf, reqS) )
+		if ( reqC->reqID != EMPTY && reqC->PID == myPID)
 		{
-			printf("Servidor recibe: %d", reqS->reqID);
-			reqcpy(&buf, reqS);
+			request.price = reqC->price;
+			memcpy(&request, reqC, sizeof request);
+			reqC->reqID = EMPTY;
 			flag = 0;
 		}
 		leave();
 		sleep(1);
 	}
 	
-	reqcpy(&request, reqS);
 	return request;
 }
 
 
 void 
 sendRequest(request_t request){
-	
-	printf("le envio al client: %d\n", request.PID);
+	int flag = 1;
 
-	enter();
-	reqcpy(reqC, &request);
-	leave();
+	while(flag){
+		enter();
+		if(reqS->reqID == EMPTY ){
+			reqS->price = request.price;
+			memcpy(reqS, &request, sizeof request);
+			flag = 0;
+		}
+		leave();
+		sleep(1);
+	}
 }
 
 int
 closeChannel(){
 	/*close(fdS);
 	close(fdC);*/
-}
-
-void
-reqcpy(request_t *reqC, request_t *request){
-	reqC->reqID = request->reqID;
-	reqC->PID = request->PID;
-	reqC->par1 = request->par1;
-	strcpy(reqC->name,request->name);
-	strcpy(reqC->message,request->message);
-	reqC->time = request->time;
-	reqC->price = reqC->price;
 }
 
 void
@@ -110,14 +106,6 @@ initmutex(void)
 {
 	if ( !(sd = sem_open(CLIENT_NAME, O_RDWR|O_CREAT, 0666, 1)) )
 		fatal("sem_open");
-}
-
-int
-reqcmp(request_t * req1, request_t *req2){
-	if(req1->reqID == req2->reqID && req1->PID == req2->PID && req1->par1 == req2->par1 && strcmp(req1->name,req2->name) && strcmp(req1->message,req2->message) && req1->time == req2->time && req1->price == req2->price ){
-		return 0;
-	}
-	return 1;
 }
 
 void
