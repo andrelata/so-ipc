@@ -87,7 +87,20 @@ closeChannel(){
 
 int
 closeCChannel(int pid){
-
+	/*int i;
+	for(i=0;i<MAX_USERS;i++){
+		if(fifos[i].pid == pid){
+			printf("cerrando canal: %d\n", fifos[i].fd);
+			close(fifos[i].fd);
+			fifos[i].pid = EMPTY;
+			fifos[i].fd = 0;
+		}
+	}
+	char Spid[20];
+	sprintf(Spid, "%d\0", pid);
+	char clientPath2[20] = CLIENT_NAME;
+	char * clientPath = strcat(clientPath2, Spid);
+	remove(clientPath);*/
 	return OK;
 }
 

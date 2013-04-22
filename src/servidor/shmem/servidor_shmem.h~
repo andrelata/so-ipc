@@ -10,7 +10,7 @@
 #include <semaphore.h>
 
 #define SERVER_NAME "/message"
-#define CLIENT_NAME "/mutex"
+#define CLIENT_NAME "/tmp/shmem"
 
 #define SIZE 1000
 

@@ -8,8 +8,8 @@
 #include <sys/mman.h>
 #include <semaphore.h>
 
-#define SERVER_NAME "/tmp/shmemsrv"
-#define CLIENT_NAME "/tmp/shmem"
+#define SERVER_NAME "message"
+#define CLIENT_NAME "/mutex"
 
 #define SIZE 1000
 
@@ -37,15 +37,11 @@ y el servidor
 */
 int closeChannel();
 
-void reqcpy(request_t *reqC, request_t *request);
-
 void enter(void);
 
 void leave(void);
 
 void initmutex(void);
-
-int reqcmp(request_t * req1, request_t *req2);
 
 void fatal(char *s);
 
