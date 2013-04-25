@@ -1,12 +1,12 @@
+TARGET = client
+
 #Compilar fifo
-TARGET = cliente
-OBJS = ./obj/client.o ./obj/client_fifo.o 
-SOURCES = client_fifo.c client.c
+#OBJS = ./obj/client.o ./obj/client_fifo.o 
+#SOURCES = client_fifo.c client.c
 
 #Compilar socket
-#TARGET = client
-#OBJS = ./obj/client.o  ./obj/client_socket.o 
-#SOURCES = client_socket.c client.c
+OBJS = ./obj/client.o  ./obj/client_socket.o 
+SOURCES = client_socket.c client.c
 
 CFLAGS = -Wall -O -Wuninitialized -g -lpthread
 

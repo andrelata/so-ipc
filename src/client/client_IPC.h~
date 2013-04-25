@@ -34,7 +34,7 @@ int closeChannel();
 Retorna: si la operacion fue satifactoria o no
 Abre la comunicacion con el servidor
 */
-int openSChannel();
+int openSChannel()
 
 #endif
 

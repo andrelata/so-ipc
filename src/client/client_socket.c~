@@ -48,7 +48,7 @@ openCChannel()
      	clientaddr.sun_family = AF_UNIX;
       	strcpy(clientaddr.sun_path, CLIENT_NAME);
 	
-	rc = bind(fdC, (struct sockaddr *)&clientaddr, SUN_LEN(&clientaddr));
+	rc = bind(fdS, (struct sockaddr *)&clientaddr, SUN_LEN(&clientaddr));
       	if (rc < 0)
       	{
          	perror("bind() failed");
