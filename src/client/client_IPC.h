@@ -1,13 +1,14 @@
 #ifndef _CLIENT_FIFO_H_ 
 #define _CLIENT_FIFO_H_ 
 
-#include "../../defs.h"
+#include "../defs.h"
 
 #define SERVER_NAME "/tmp/server"
+#define CLIENT_NAME "/tmp/client"
 
 /**
 Retorna: si la operacion fue satifactoria o no
-Abre la comunicacion con el servidor
+Abre el canal de comunicacion entre el cliente y el servidor
 */
 int openCChannel();
 
@@ -28,6 +29,12 @@ cierra el canal de comunicacion entre el cliente
 y el servidor
 */
 int closeChannel();
+
+/**
+Retorna: si la operacion fue satifactoria o no
+Abre la comunicacion con el servidor
+*/
+int openSChannel()
 
 #endif
 

@@ -90,6 +90,5 @@ receiveRequest()
 int 
 closeChannel()
 {
-        close(fdS);
-	remove(SERVER_NAME);
+      close(fdS);
 }

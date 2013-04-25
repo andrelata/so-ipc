@@ -127,8 +127,11 @@ sendRequest(request_t request){
 
 int 
 closeChannel(){
-      	close(fdS);
-      	close(fdC);
+	//if (fdS != -1)
+      		close(fdS);
+
+   	//if (fdC != -1)
+      		close(fdC);
 	remove(SERVER_NAME);
 	printf("cierro puertos\n");
 	return 0;

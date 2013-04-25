@@ -25,6 +25,11 @@ main(int argc, char *argv[])
 	}while(0);
 	closeChannel();	
 }
+int 
+openSChannel()
+{
+	
+}
 
 int 
 openCChannel()
@@ -32,12 +37,13 @@ openCChannel()
 	int rc;
 	struct sockaddr_un serveraddr;
 
-   	fdS = socket(AF_UNIX, SOCK_STREAM, 0);
+	fdS = socket(AF_UNIX, SOCK_STREAM, 0);
       	if (fdS < 0)
       	{
          	perror("socket() failed");
-         	return -1;
+         	return ERROR;
       	}
+	return OK;
 	
 	memset(&serveraddr, 0, sizeof(serveraddr));
       	serveraddr.sun_family = AF_UNIX;
