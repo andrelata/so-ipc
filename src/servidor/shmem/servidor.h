@@ -3,10 +3,20 @@
 
 #include "../defs.h"
 #include "./servidorStruct.h"
+#include <stdlib.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <semaphore.h>
 
 #define MAXSESSION 10
 
 #define MAX_USERS 20
+
+#define SERVER "/message0"
+#define SEMAPH "/mutex0"
+
+#define SIZE 1000
 
 /**
 Parametros: PID del usuario, nickname
@@ -86,5 +96,17 @@ y le devuelve un request segun la accion realiza
 con la operacion que corresponda
 */
 void parserRequest(request_t request);
+
+request_t receiveRequest();
+
+int createServerSH();
+
+void initmutex(void);
+
+void fatal(char *s);
+
+void enter(void);
+
+void leave(void);
 
 #endif

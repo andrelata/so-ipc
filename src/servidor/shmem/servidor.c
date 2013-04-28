@@ -8,12 +8,13 @@
 #include <time.h>
 
 #include "../defs.h"
-#include "./servidor_shmem.h"
+
 #include "./servidor.h"
 #include "./servidorStruct.h"
 
-session_t session[MAXSESSION];
-user_t user[MAX_USERS];
+session_t * session;
+user_t * user;
+static sem_t *sd;
 
 int
 main(int argc, char **argv)
@@ -25,6 +26,7 @@ main(int argc, char **argv)
 	if(createServerChannel() == -1)
 		return 0;
 
+	createServerSH();
 
 	//inicializacion de sesiones
 	int i;
@@ -45,7 +47,35 @@ main(int argc, char **argv)
 	while(1){
 		request = receiveRequest();
 		parserRequest(request);
+		if(request.reqID == DISCONNECT)
+			break;
 	}
+	printf("Se desconecto el usuario %s\n", request.name);
+}
+
+int 
+createServerSH(){
+	
+	int fdS;
+	if ( (fdS = shm_open(SERVER, O_RDWR|O_CREAT, 0666)) == -1 )
+		fatal("sh_open");
+	ftruncate(fdS, SIZE);
+	if ( !(session = mmap(NULL, SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fdS, 0)) )
+		fatal("mmap");
+	
+	user = session + MAXSESSION;
+	close(fdS);
+	initmutex();
+
+	return 0;
+
+}
+
+void
+initmutex(void)
+{
+	if ( !(sd = sem_open(SEMAPH, O_RDWR|O_CREAT, 0666, 1)) )
+		fatal("sem_open");
 }
 
 void
@@ -95,6 +125,8 @@ connectClient(pid_t PID, char * name){
 
 	request.PID = PID; 
 
+	int pid;
+
 	int i;
 
 	if( createChannel(PID) == -1 ){
@@ -103,6 +135,7 @@ connectClient(pid_t PID, char * name){
 		request.reqID = OK;
 	}
 
+	enter();
 	for(i = 0; i < MAX_USERS; i++)
 	{
 		if(user[i].userID != EMPTY && strcmp(user[i].nickname, name) == 0)
@@ -135,13 +168,30 @@ connectClient(pid_t PID, char * name){
 		return;
 	}
 
-	strcpy(user[j].nickname, name);
-	user[j].userID = PID;
-	user[j].state = 1; /*conectado = 1*/
-	user[j].sessionID = EMPTY; /*no tiene session asignada = -1*/
-	user[j].time = time(NULL);
+	switch ( pid = fork() )
+	{
+		case -1:
+			fatal("Error fork");
+			break;
+
+		case 0: /* hijo */
+			openNewChannel(PID);
+
+			strcpy(user[j].nickname, name);
+			user[j].userID = PID;
+			user[j].state = 1; /*conectado = 1*/
+			user[j].sessionID = EMPTY; /*no tiene session asignada = -1*/
+			user[j].time = time(NULL);
 	
-	sendRequest(request);	
+			sendRequest(request);	
+			
+			break;
+		
+		default: /* padre */
+			break;
+	}
+	leave();
+
 }
 
 void 
@@ -154,8 +204,9 @@ disconnect(pid_t PID){
 
 	int k = getUserIndex(PID);
 
+	enter();
 	user[k].userID = EMPTY;
-
+	leave();
 
 	if(closeCChannel(PID) == OK){
 		request.reqID = OK;
@@ -175,6 +226,7 @@ void getSession(pid_t PID)
 
 	request.PID = PID;
 	
+	enter();
 	for(i = 0; i < MAXSESSION; i++)
 	{
 		if(session[i].id != EMPTY)
@@ -201,6 +253,7 @@ void getSession(pid_t PID)
 			sendRequest(request);
 		}
 	}
+	leave();
 		
 }
 
@@ -214,7 +267,7 @@ joinSession(pid_t PID, int n){
 
 	int k = getUserIndex(PID);
 
-
+	enter();
 	for(i = 0; i < MAXSESSION; i++)
 	{
 		if(session[i].id == n)
@@ -226,6 +279,7 @@ joinSession(pid_t PID, int n){
 			break;
 		}
 	}
+	leave();
 	if(i == MAXSESSION)
 	{
 		request.reqID = ERROR;
@@ -244,6 +298,7 @@ exitSession(pid_t PID){
 
 	int k = getUserIndex(PID);
 	
+	enter();
 	if(user[k].sessionID == EMPTY){
 		request.reqID = ERROR;
 		strcpy(request.message,"El usuario no se encuentra en ninguna sesion\n");
@@ -259,6 +314,7 @@ exitSession(pid_t PID){
 		request.reqID = OK;
 	}
 	user[k].sessionID = EMPTY;
+	leave();
 	request.reqID = ERROR;
 	sendRequest(request);
 	
@@ -276,15 +332,16 @@ createSession(pid_t PID, char * name){
 
 	request.reqID = OK;
 
+	enter();
 	for(i = 0; i < MAXSESSION; i++)
 	{
+		if(session[i].id == EMPTY)
+			break;	
 		if(strcmp(session[i].name, name) == 0){
 			request.reqID = ERROR;
 			strcpy(request.message,"Ya existe una sesion con ese nombre");
 			break;
 		}
-		if(session[i].id == EMPTY)
-			break;	
 	}
 	if(request.reqID != ERROR && i < MAXSESSION)
 	{
@@ -293,6 +350,7 @@ createSession(pid_t PID, char * name){
 		session[i].users = 1;
 		user[k].sessionID = i;
 	}
+	leave();
 	
 	sendRequest(request);
 	
@@ -308,7 +366,8 @@ sentText(pid_t PID, char * message){
 	request.PID = PID;
 
 	int k = getUserIndex(PID);
-	
+
+	enter();	
 	if(user[k].sessionID != EMPTY)
 	{
 		request.reqID = SEND_TEXT;
@@ -331,6 +390,7 @@ sentText(pid_t PID, char * message){
 			sendRequest(request);
 		}
 	}
+	leave();
 	
 }
 
@@ -344,7 +404,9 @@ checkPrice(pid_t PID){
 	
 	request.reqID = SEND_PRICE;
 	time_t actualTime = time(NULL);
+	enter();
 	double time = difftime(actualTime, user[k].time);
+	leave();
 	request.price = time * PRICE;
 	
 	sendRequest(request);
@@ -358,7 +420,9 @@ changeState(pid_t PID, int n){
 
 	int k = getUserIndex(PID);
 	
+	enter();
 	user[k].state = n;
+	leave();
 	request.reqID = OK;
 	
 	sendRequest(request);
@@ -374,10 +438,12 @@ checkSession(pid_t PID){
 
 	int k = getUserIndex(PID);
 	
+	enter();
 	if(user[k].sessionID == EMPTY)
 		strcpy(request.message, "No tiene sesion asignada");
 	else if (user[k].state = 2)
 		strcpy(request.message, session[user->sessionID].name);
+	leave();
 	sendRequest(request);	
 }
 
@@ -386,6 +452,7 @@ getUserIndex(int pid){
 	int i;
 	int k=-1;
 
+	enter();
 	for(i = 0; i < MAX_USERS && k==-1; i++)
 	{
 		if(user[i].userID == pid)
@@ -393,6 +460,25 @@ getUserIndex(int pid){
 			k=i;
 		}
 	}
+	leave();
 	return k;
 }
 
+void
+fatal(char *s)
+{
+	perror(s);
+	exit(1);
+}
+
+void
+enter(void)
+{
+	sem_wait(sd);
+}
+
+void
+leave(void)
+{
+	sem_post(sd);
+}

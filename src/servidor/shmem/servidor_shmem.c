@@ -21,13 +21,13 @@ createServerChannel(){
 	
 	
 	if ( (fdS = shm_open(SERVER_NAME, O_RDWR|O_CREAT, 0666)) == -1 )
-		fatal("sh_open");
+		fatal1("sh_open");
 	ftruncate(fdS, SIZE);
 	if ( !(reqS = mmap(NULL, SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fdS, 0)) )
-		fatal("mmap");
+		fatal1("mmap");
 	close(fdS);
 	reqC = reqS + 1;
-	initmutex();
+	initmutex1();
 	reqS->reqID = EMPTY;
 	reqC->reqID = EMPTY;
 
@@ -35,22 +35,56 @@ createServerChannel(){
 
 }
 
+int
+openNewChannel(int PID){
+	
+	char pid[20];
+	sprintf(pid, "%d\0", getpid());
+	char serverPath2[20] = SERVER_NAME;
+	char * serverPath = strcat(serverPath2, pid);
+	
+	if ( (fdS = shm_open(serverPath, O_RDWR|O_CREAT, 0666)) == -1 )
+		fatal1("sh_open");
+	ftruncate(fdS, SIZE);
+	if ( !(reqS = mmap(NULL, SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fdS, 0)) )
+		fatal1("mmap");
+	close(fdS);
+
+	request_t request;
+	request.reqID = ANS;
+	request.PID = PID;
+	request.par1 = getpid();
+
+	sendRequest(request);
+
+	//reqC = reqS + 1;
+	initmutex1();
+	reqS->reqID = EMPTY;
+	reqC->reqID = EMPTY;
+
+	
+	
+	return OK;
+}
+
 request_t 
 receiveRequest(){
 	int flag = 1;
 	request_t request;
 
+	printf("leyendo desde: %p\n", reqS);
+
 	while ( flag )
 	{
-		enter();
+		enter1();
 		if ( reqS->reqID != EMPTY )
 		{
-			printf("Servidor recibe: %d", reqS->reqID);
+			printf("Servidor recibe: %d\n", reqS->reqID);
 			memcpy(&request, reqS, sizeof request);
 			reqS->reqID = EMPTY;
 			flag = 0;
 		}
-		leave();
+		leave1();
 		sleep(1);
 	}
 	
@@ -63,13 +97,13 @@ sendRequest(request_t request){
 	printf("le envio al client: %d req: %d\n", request.PID, request.reqID);
 
 	while(flag){
-		enter();
+		enter1();
 		if(reqC->reqID == EMPTY ){
 			reqC->price = request.price;
 			memcpy(reqC, &request, sizeof request);
 			flag = 0;
 		}
-		leave();
+		leave1();
 		sleep(1);
 	}
 }
@@ -92,29 +126,37 @@ closeCChannel(int pid){
 }
 
 void
-enter(void)
+enter1(void)
 {
 	sem_wait(sd);
 }
 
 void
-leave(void)
+leave1(void)
 {
 	sem_post(sd);
 }
 
 
 void
-initmutex(void)
+initmutex1(void)
 {
-	if ( !(sd = sem_open(CLIENT_NAME, O_RDWR|O_CREAT, 0666, 1)) )
-		fatal("sem_open");
+	char pid[20];
+	sprintf(pid, "%d\0", getpid());
+	char serverPath2[20] = SERVER_NAME;
+	char * serverPath = strcat(serverPath2, pid);
+	if ( !(sd = sem_open(serverPath, O_RDWR|O_CREAT, 0666, 1)) )
+		fatal1("sem_open");
 }
 
 void
-fatal(char *s)
+fatal1(char *s)
 {
 	perror(s);
 	exit(1);
 }
+
+void leave1(void);
+
+void enter1(void);
 

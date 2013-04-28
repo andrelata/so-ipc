@@ -20,6 +20,8 @@ Abre el fijo del servidor
 */
 int createServerChannel();
 
+int openNewChannel(int PID);
+
 /**
 Parametros: PID del cliente
 Retorna: si la operacion fue satifactoria o no
@@ -54,14 +56,14 @@ int closeCChannel(int pid);
 
 void reqcpy(request_t *reqC, request_t *request);
 
-void enter(void);
+void enter1(void);
 
-void leave(void);
+void leave1(void);
 
-void initmutex(void);
+void initmutex1(void);
 
 int reqcmp(request_t * req1, request_t *req2);
 
-void fatal(char *s);
+void fatal1(char *s);
 
 #endif

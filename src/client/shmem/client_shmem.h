@@ -8,7 +8,7 @@
 #include <sys/mman.h>
 #include <semaphore.h>
 
-#define SERVER_NAME "message"
+#define SERVER_NAME "/message"
 #define CLIENT_NAME "/mutex"
 
 #define SIZE 1000

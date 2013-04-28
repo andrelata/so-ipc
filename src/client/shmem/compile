@@ -2,5 +2,5 @@ cc client.c -MM -MT 'client.o client.d' > client.d
 cc client_shmem.c -MM -MT 'client_shmem.o client_shmem.d' > client_shmem.d
 cc -c -o client.o client.c
 cc -c -o client_shmem.o client_shmem.c
-cc -o cliente client.o client_shmem.o -lrt
+cc -o cliente client.o client_shmem.o -lrt -lpthread
 

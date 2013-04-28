@@ -30,7 +30,24 @@ int openSChannel(){
 }
 
 int openCChannel(){
-
+	request_t req;
+	req = receiveRequest();
+	if(req.reqID != ANS){
+		printf("error\n");
+		return ERROR;
+	}
+	char pid[20];
+	sprintf(pid, "%d\0", req.par1);
+	char serverPath2[20] = SERVER_NAME;
+	char * serverPath = strcat(serverPath2, pid);
+	
+	if ( (fdS = shm_open(serverPath, O_RDWR|O_CREAT, 0666)) == -1 )
+		fatal("sh_open");
+	ftruncate(fdS, SIZE);
+	if ( !(reqS = mmap(NULL, SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fdS, 0)) )
+		fatal("mmap");
+	close(fdS);
+	//reqC = reqS+1;
 	return OK;
 }
 
