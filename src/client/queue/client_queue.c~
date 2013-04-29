@@ -79,7 +79,6 @@ sendRequest(request_t request){
 
 int
 closeChannel(){
-	mq_unlink(cltname);
 	return OK;
 }
 

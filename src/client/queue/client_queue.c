@@ -19,8 +19,6 @@ int openSChannel(){
 	attr.mq_maxmsg = 10;
 	attr.mq_msgsize = sizeof msg;
 
-	printf("Abre canal del servidor\n");
-
 	if ( (qout = mq_open(SERVER_NAME, O_WRONLY|O_CREAT, 0666, &attr)) == -1 )
 		fatal("Error mq_open qout");
 
@@ -61,7 +59,6 @@ receiveRequest(){
 	while( !( (n = mq_receive(qin, msgptr, sizeof msg, NULL)) > 0 ))
 	{		
 	}
-		printf("Servidor recibe algo: %d\n", msg.mreq.reqID);
 	
 	return msg.mreq;
 }
@@ -72,7 +69,6 @@ sendRequest(request_t request){
 	char *msgptr = (char *) &msg;
 	int offset = (char *) &(msg.mreq) - msgptr;
 	memcpy(&(msg.mreq), &request, sizeof request);
-	printf("Servidor envia algo: %d\n", msg.mreq.reqID);
 	
 	mq_send(qout, msgptr, sizeof msg, 0);
 }

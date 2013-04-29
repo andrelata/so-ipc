@@ -98,8 +98,8 @@ createChannel(int clientPID){
 	attr.mq_msgsize = sizeof msg;
 	cltPID = clientPID;
 	sprintf(cltname, "/client_%d_queue", clientPID);
-	if ( (qout = mq_open(cltname, O_RDONLY|O_CREAT, 0666, &attr)) == -1 )
-		fatal1("Error mq_open qin");
+	if ( (qout = mq_open(cltname, O_WRONLY|O_CREAT, 0666, &attr)) == -1 )
+		fatal1("Error mq_open qout");
 	return OK;
 }
 

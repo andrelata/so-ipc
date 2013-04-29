@@ -26,7 +26,6 @@ createServerChannel(){
 	struct mq_attr attr;
 	attr.mq_maxmsg = 10;
 	attr.mq_msgsize = sizeof msg;
-	printf("Abre canal del servidor\n");
 		
 	if ( (qin = mq_open(SERVER_NAME, O_RDONLY|O_CREAT, 0666, &attr)) == -1 )
 		fatal1("Error mq_open qin");
@@ -67,7 +66,6 @@ receiveRequest(){
 	while( !( (n = mq_receive(qin, msgptr, sizeof msg, NULL)) > 0 ))
 	{
 	}
-		printf("Servidor recibe algo: %d\n", msg.mreq.reqID);
 	
 	return msg.mreq;
 }
@@ -78,7 +76,6 @@ sendRequest(request_t request){
 	char *msgptr = (char *) &msg;
 	int offset = (char *) &(msg.mreq) - msgptr;
 	memcpy(&(msg.mreq), &request, sizeof request);
-	printf("Servidor recibe algo: %d\n", msg.mreq.reqID);
 	if(request.PID != cltPID){
 		char cltname2[50];
 		mqd_t qout2;
