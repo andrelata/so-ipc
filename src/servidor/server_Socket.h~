@@ -1,6 +1,0 @@
-#ifndef _SERVIDOR_IPC_H_ 
-#define _SERVIDOR_IPC_H_ 
-
-#define SERVER_NAME
-
-#endif
