@@ -2,16 +2,15 @@
 #define _SERVIDOR_IPC_H_ 
 
 #include "../defs.h"
-#include "servidor.h"
-
-#define SERVER_NAME "/tmp/server"
-#define CLIENT_NAME "/tmp/client"
+#include "servidorC.h"
 
 /**
 Retorna: si la operacion fue satifactoria o no
 Abre el fijo del servidor
 */
 int createServerChannel();
+
+int openNewChannel(int PID);
 
 /**
 Parametros: PID del cliente

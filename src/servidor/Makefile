@@ -8,12 +8,12 @@ OBJS = ./obj/server_Socket.o ./obj/servidor.o
 SOURCES = server_Socket.c servidor.c
 
 #Compilar servidor queue
-#OBJS = ./obj/server_queue.o ./obj/servidor.o 
-#SOURCES = server_queue.c servidor.c
+OBJS = ./obj/servidor_queue.o ./obj/servidorC.o 
+SOURCES = servidor_queue.c servidorC.c
 
 #Compilar servidor shmem
-#OBJS = ./obj/servidor_shmem.o ./obj/servidor.o 
-#SOURCES = servidor_shmem.c servidor.c
+#OBJS = ./obj/servidor_shmem.o ./obj/servidorC.o 
+#SOURCES = servidor_shmem.c servidorC.c
 
 CFLAGS = -Wall -O -Wuninitialized -g
 
@@ -28,4 +28,4 @@ $(OBJS) : $(SOURCES)
 
 clean:
 	-rm -rf ./obj/*.o
-	-rm -rf servidor
+	-rm -rf server

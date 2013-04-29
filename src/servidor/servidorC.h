@@ -1,5 +1,5 @@
-#ifndef _SERVIDOR_H_ 
-#define _SERVIDOR_H_ 
+#ifndef _SERVIDORC_H_ 
+#define _SERVIDORC_H_ 
 
 #include "../defs.h"
 #include "./servidorStruct.h"

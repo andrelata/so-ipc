@@ -6,7 +6,8 @@
 #include <sys/types.h> 
 #include <sys/stat.h>
 
-#include "../../defs.h"
+#include "../defs.h"
+#include "./servidor_IPC.h"
 #include "./servidor_queue.h"
 #include "./servidorStruct.h"
 

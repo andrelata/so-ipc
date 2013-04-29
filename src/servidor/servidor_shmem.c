@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 
 #include "../defs.h"
+#include "./servidor_IPC.h"
 #include "./servidor_shmem.h"
 #include "./servidorStruct.h"
 

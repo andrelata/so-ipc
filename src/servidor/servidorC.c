@@ -9,7 +9,7 @@
 
 #include "../defs.h"
 
-#include "./servidor.h"
+#include "./servidorC.h"
 #include "./servidorStruct.h"
 
 session_t * session;

@@ -1,6 +1,0 @@
-cc client.c -MM -MT 'client.o client.d' > client.d
-cc client_queue.c -MM -MT 'client_queue.o client_queue.d' > client_queue.d
-cc -c -o client.o client.c
-cc -c -o client_queue.o client_queue.c
-cc -o cliente client.o client_queue.o -lrt -lpthread
-

@@ -6,7 +6,8 @@
 #include <sys/types.h> 
 #include <sys/stat.h>
 
-#include "../../defs.h"
+#include "../defs.h"
+#include "./client_IPC.h"
 #include "./client_queue.h"
 
 char cltname[100];
@@ -20,7 +21,7 @@ int openSChannel(){
 	attr.mq_msgsize = sizeof msg;
 
 	if ( (qout = mq_open(SERVER_NAME, O_WRONLY|O_CREAT, 0666, &attr)) == -1 )
-		fatal("Error mq_open qout");
+		fatal("Error mq_open qouttt");
 
 	return 0;
 }
@@ -33,7 +34,7 @@ int openCChannel(){
 
 	sprintf(cltname, "/client_%d_queue", getpid());
 	if ( (qin = mq_open(cltname, O_RDONLY|O_CREAT, 0666, &attr)) == -1 )
-		fatal("Error mq_open qin");	
+		fatal("Error mq_open qin");
 
 	request_t req;
 	req = receiveRequest();
