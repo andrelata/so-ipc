@@ -1,6 +1,0 @@
-cc servidor.c -MM -MT 'servidor.o servidor.d' > servidor.d
-cc servidor_shmem.c -MM -MT 'servidor_shmem.o servidor_shmem.d' > servidor_shmem.d
-cc -c -o servidor.o servidor.c
-cc -c -o servidor_shmem.o servidor_shmem.c
-cc -o servidor servidor.o servidor_shmem.o -lrt -lpthread
-
