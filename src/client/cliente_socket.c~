@@ -65,8 +65,8 @@ receiveRequest()
 	int rc;
 	request_t request;
 
-	//rc = recv(fdC, &request, sizeof(request), 0);
-	rc = read (fdC, &request, sizeof(request));
+	rc = recv(fdC, &request, sizeof(request), 0);
+	//rc = read (fdC, &request, sizeof(request));
 	if (rc < 0)
 	{
 		perror("recv() failed");

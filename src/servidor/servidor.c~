@@ -8,7 +8,7 @@
 #include <time.h>
 
 #include "../defs.h"
-#include "./servidor_IPC.h"
+#include "./servidor_fifo.h"
 #include "./servidor.h"
 #include "./servidorStruct.h"
 
