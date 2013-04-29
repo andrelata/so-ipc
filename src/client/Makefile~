@@ -1,12 +1,12 @@
 TARGET = client
 
 #Compilar fifo
-#OBJS = ./obj/cliente.o ./obj/cliente_fifo.o 
-#SOURCES = cliente_fifo.c cliente.c
+OBJS = ./obj/cliente.o ./obj/cliente_fifo.o 
+SOURCES = cliente_fifo.c cliente.c
 
 #Compilar socket
-OBJS = ./obj/cliente.o  ./obj/cliente_socket.o 
-SOURCES = cliente_socket.c cliente.c
+#OBJS = ./obj/cliente.o  ./obj/cliente_socket.o 
+#SOURCES = cliente_socket.c cliente.c
 
 #Compilar queue
 #OBJS = ./obj/cliente.o  ./obj/cliente_queue.o 
