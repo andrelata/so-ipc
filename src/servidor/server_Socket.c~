@@ -26,7 +26,7 @@ int
 createServerChannel()
 {
       	int rc;
-	struct sockaddr_un serveraddr;
+		struct sockaddr_un serveraddr;
 
       	fdS = socket(AF_UNIX, SOCK_STREAM, 0);
       	if (fdS < 0)

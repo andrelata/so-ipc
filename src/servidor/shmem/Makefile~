@@ -8,8 +8,12 @@ TARGET = server
 #SOURCES = server_Socket.c servidor.c
 
 #Compilar servidor queue
-OBJS = ./obj/servidor_queue.o ./obj/servidor.o 
-SOURCES = servidor_queue.c servidor.c
+OBJS = ./obj/server_queue.o ./obj/servidor.o 
+SOURCES = server_queue.c servidor.c
+
+#Compilar servidor shmem
+OBJS = ./obj/server_queue.o ./obj/servidor.o 
+SOURCES = server_queue.c servidor.c
 
 CFLAGS = -Wall -O -Wuninitialized -g
 

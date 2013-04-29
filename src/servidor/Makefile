@@ -7,12 +7,20 @@ TARGET = server
 OBJS = ./obj/server_Socket.o ./obj/servidor.o 
 SOURCES = server_Socket.c servidor.c
 
+#Compilar servidor queue
+#OBJS = ./obj/server_queue.o ./obj/servidor.o 
+#SOURCES = server_queue.c servidor.c
+
+#Compilar servidor shmem
+#OBJS = ./obj/servidor_shmem.o ./obj/servidor.o 
+#SOURCES = servidor_shmem.c servidor.c
+
 CFLAGS = -Wall -O -Wuninitialized -g
 
 .SILENT:
 
 $(TARGET): $(OBJS)
-	gcc -o $(TARGET) $(OBJS) -lm
+	gcc -o $(TARGET) $(OBJS) -lm -lrt -lpthread
 
 $(OBJS) : $(SOURCES) 
 	gcc -c $(SOURCES)
