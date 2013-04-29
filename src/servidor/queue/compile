@@ -1,0 +1,6 @@
+cc servidor.c -MM -MT 'servidor.o servidor.d' > servidor.d
+cc servidor_queue.c -MM -MT 'servidor_queue.o servidor_queue.d' > servidor_queue.d
+cc -c -o servidor.o servidor.c
+cc -c -o servidor_queue.o servidor_queue.c
+cc -o servidor servidor.o servidor_queue.o -lrt -lpthread
+
