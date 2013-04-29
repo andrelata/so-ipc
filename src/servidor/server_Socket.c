@@ -14,29 +14,19 @@
 
 #define MAX_USERS 20
 
+void compactaClaves (cIPC_t * ipcsClient, int *n);
+int dameMaximo (cIPC_t * ipcsClient, int n);
+
 cIPC_t ipcsClient[MAX_USERS];
-
-int fdS;//, fdC;
-
-/*void main()
-{	
-	request_t request;
-	do{
-		if(createServerChannel() == -1)
-			break;
-		if(createChannel(0) == -1)
-			break;
-		request = receiveRequest();
-		sendRequest(request);
-	}while(0);
-	closeChannel();
-}*/
+fd_set descriptoresLectura; /* Descriptores de interes para select() */
+int fdS;
+int numeroClientes = 0; /* Número clientes conectados */
 
 int 
 createServerChannel()
 {
       	int rc;
-	struct sockaddr_un serveraddr;
+		struct sockaddr_un serveraddr;
 
       	fdS = socket(AF_UNIX, SOCK_STREAM, 0);
       	if (fdS < 0)
@@ -55,20 +45,67 @@ createServerChannel()
          	perror("bind() failed");
          	return ERROR;
       	}
+	/*
+	 * Avisamos al sistema que comience a atender peticiones de clientes.
+	 */
+	if (listen (fdS, 1) == -1)
+	{
+		close (fdS);
+		return ERROR;
+	}
+	
+	/* Se inicializa descriptoresLectura */
+	FD_ZERO (&descriptoresLectura);
+	
+	/* Se añade para select() el socket servidor */
+	FD_SET (fdS, &descriptoresLectura);
+	
 
 	//inicializa los ipcsClient:
 
 	int i;
 	for(i=0;i<MAX_USERS;i++){
 		ipcsClient[i].pid = EMPTY;
+		ipcsClient[i].fd = -1;
+		
 	}
-      	return OK;
+	return OK;
 }
 
 int 
 createChannel(int clientPID){
+	
+	socklen_t Longitud_Cliente;
+	struct sockaddr Cliente;
+	int fdC;
+	
+	/* Se eliminan todos los clientes que hayan cerrado la conexión */
+	compactaClaves (ipcsClient, &numeroClientes);
+	
+	Longitud_Cliente = sizeof(Cliente);
+	fdC = accept(fdS, &Cliente, &Longitud_Cliente);
+	if(fdC == -1)
+		return ERROR;
+	
 
-	int rc, i;
+	if ((numeroClientes) <= MAX_USERS)
+	{		
+		ipcsClient[numeroClientes].pid = clientPID;
+		ipcsClient[numeroClientes].fd = fdC;
+		numeroClientes++;
+	}
+	else {
+		return ERROR;
+	}
+	
+	/* Se añaden para select() el sockets con el cliente ya conectado */
+	FD_SET (ipcsClient[numeroClientes].fd, &descriptoresLectura);		
+
+	printf ("Aceptado cliente %d\n", clientPID);
+	return OK;
+	
+
+	/*int rc, i;
 	int * fdC;
 	int flag = 0;
 
@@ -114,29 +151,57 @@ createChannel(int clientPID){
          	return ERROR;
       	}
 	printf("Abrio el socket %d\t%d\n", *fdC, ipcsClient[i-1].fd);
-	return OK;
+	return OK;*/
 }
 
 request_t 
 receiveRequest(){
-
-	int rc;
-	//char buffer[BUFSIZE];
+	
+	int maximo;
+	int i, rc;
 	request_t request;
 
-      	rc = recv(fdS, &request, sizeof(request), 0);
-      	if (rc < 0)
-      	{
-         	perror("recv() failed");
-         	//strncpy(request.name,"error",NAME_LENGTH);
-		return request;
-      	} 
-      	//printf("%d bytes of data were received\n", rc);
-      	printf("recibio request= %d\n",request.reqID);
+	maximo = dameMaximo (ipcsClient, numeroClientes);
 	
-	//strncpy(request.name,"bb",NAME_LENGTH);
-
-	return request;
+	if (maximo < fdS)
+		maximo = fdS;
+	
+	/* Espera indefinida hasta que alguno de los descriptores tenga algo
+	 * que decir: un mensaje de algun cliente ya conectado
+	 * Parametros: 
+	 * - el valor del descriptor más alto que queremos tratar más uno
+	 * -  un puntero a los descriptores de los que nos interesa saber 
+	 si hay algún dato disponible para leer o que queremos 
+	 que se nos avise cuando lo haya
+	 * - (ultimo parametro) struct timeval * es el tiempo que 
+	 queremos esperar como máximo. Si pasamos NULL, nos quedaremos bloqueados 
+	 en la llamada a select() hasta que suceda algo en alguno de 
+	 los descriptores. Se puede poner un tiempo cero si únicamente 
+	 queremos saber si hay algo en algún descriptor, sin quedarnos 
+	 bloqueados.*/
+	select(maximo + 1, &descriptoresLectura, NULL,NULL,NULL);
+	
+	/* Se comprueba si algún cliente ya conectado ha enviado algo */
+	for (i=0; i<numeroClientes; i++)
+	{
+		/*nos indica si ha habido algo en el descriptor int dentro de fd_set*/
+		if (FD_ISSET (ipcsClient[i].fd, &descriptoresLectura))
+		{
+			rc = recv(fdS, &request, sizeof(request), 0);
+			if (rc < 0)
+			{
+				perror("recv() failed");
+				//strncpy(request.name,"error",NAME_LENGTH);
+				request.reqID = ERROR;
+				return request;
+			} 
+			//printf("%d bytes of data were received\n", rc);
+			printf("recibio request= %d\n",request.reqID);
+			
+			return request;
+		}
+	}
+	
 }
 
 void 
@@ -156,7 +221,7 @@ sendRequest(request_t request){
          	perror("send() failed");
          	return;
       	}
-	printf("escribio en el fifo %d del client: %d\n", fdC, request.PID);
+	printf("escribio en el client: %d\n", request.PID);
 }
 
 //repite codigo, con servidor_fifo.c
@@ -190,13 +255,60 @@ closeCChannel(int pid){
 			printf("cerrando canal: %d\n", ipcsClient[i].fd);
 			close(ipcsClient[i].fd);
 			ipcsClient[i].pid = EMPTY;
-			ipcsClient[i].fd = 0;
+			ipcsClient[i].fd = -1;
 		}
 	}
-	char Spid[20];
+	/*char Spid[20];
 	sprintf(Spid, "%d\0", pid);
 	char clientPath2[20] = CLIENT_NAME;
 	char * clientPath = strcat(clientPath2, Spid);
-	remove(clientPath);
+	remove(clientPath);*/
 	return OK;
+}
+
+/*
+ * Busca en array todas las posiciones con -1 y las elimina, copiando encima
+ * las posiciones siguientes.
+ * Ejemplo, si la entrada es (3, -1, 2, -1, 4) con *n=5
+ * a la salida tendremos (3, 2, 4) con *n=3
+ */
+void 
+compactaClaves (cIPC_t * ipcsClient, int *n)
+{
+	int i,j;
+	
+	if ((ipcsClient == NULL) || ((*n) == 0))
+		return;
+	
+	j=0;
+	for (i=0; i<(*n); i++)
+	{
+		if (ipcsClient[i].fd != -1)
+		{
+			ipcsClient[j] = ipcsClient[i];
+			j++;
+		}
+	}
+	
+	*n = j;
+}
+
+/*
+ * Función que devuelve el valor máximo en la tabla.
+ * Supone que los valores válidos de la tabla son positivos y mayores que 0.
+ * Devuelve 0 si n es 0 o la tabla es NULL */
+int dameMaximo (cIPC_t * ipcsClient, int n)
+{
+	int i;
+	int max;
+	
+	if ((ipcsClient == NULL) || (n<1))
+		return 0;
+	
+	max = ipcsClient[0].fd;
+	for (i=0; i<n; i++)
+		if (ipcsClient[i].fd > max)
+			max = ipcsClient[i].fd;
+	
+	return max;
 }

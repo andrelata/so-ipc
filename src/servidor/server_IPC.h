@@ -5,7 +5,7 @@
 //#include "servidor.h"
 
 #define SERVER_NAME "/tmp/server"
-#define CLIENT_NAME "/tmp/client"
+//#define CLIENT_NAME "/tmp/client"
 
 /**
 Retorna: si la operacion fue satifactoria o no
