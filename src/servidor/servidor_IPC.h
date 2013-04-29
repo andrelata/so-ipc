@@ -1,11 +1,11 @@
-#ifndef _SERVIDOR_FIFO_H_ 
-#define _SERVIDOR_FIFO_H_ 
+#ifndef _SERVIDOR_IPC_H_ 
+#define _SERVIDOR_IPC_H_ 
 
 #include "../defs.h"
 #include "servidor.h"
 
-#define SERVER_NAME "/tmp/fifosrv"
-#define CLIENT_NAME "/tmp/fifo"
+#define SERVER_NAME "/tmp/server"
+#define CLIENT_NAME "/tmp/client"
 
 /**
 Retorna: si la operacion fue satifactoria o no
@@ -45,8 +45,8 @@ cierra la comunicacion con el fifo especificado
 */
 int closeCChannel(int pid);
 
-typedef struct cFifos {
+typedef struct cIPC {
 	int pid;
 	int fd;
-} cFifos_t;
+} cIPC_t;
 #endif

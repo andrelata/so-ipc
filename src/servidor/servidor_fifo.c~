@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 
 #include "../defs.h"
-#include "./servidor_IPC.h"
+#include "./server_IPC.h"
 #include "./servidorStruct.h"
 
 int fdS;
