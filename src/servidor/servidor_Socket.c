@@ -13,51 +13,46 @@
 #include "./servidorStruct.h"
 
 #define SERVER_NAME "/tmp/server"
+#define CLIENT_NAME "/tmp/client"
 
 cIPC_t ipcsClient[MAX_USERS];
-int fdS;
+
+//char   buffer[BUFFER_LENGTH];
+
+int fdS, sentSock;
 int numeroClientes = 0;
 
 int 
 createServerChannel()
 {
-      	int rc;
-		struct sockaddr_un serveraddr;
+	int	 rc;
+	struct sockaddr_un serveraddr;
 
-      	fdS = socket(AF_UNIX, SOCK_STREAM, 0);
-      	if (fdS < 0)
-      	{
-         	perror("socket() failed");
-        	return ERROR;
-      	}
-      
-     	memset(&serveraddr, 0, sizeof(serveraddr));
-     	serveraddr.sun_family = AF_UNIX;
-      	strcpy(serveraddr.sun_path, SERVER_NAME);
+	fdS = socket(AF_UNIX, SOCK_DGRAM, 0);
+	if (fdS < 0) {
+		perror("socket() failed");
+		return ERROR;
+	}
+
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sun_family = AF_UNIX;
+	strcpy(serveraddr.sun_path, SERVER_NAME);
 	
-      	rc = bind(fdS, (struct sockaddr *)&serveraddr, SUN_LEN(&serveraddr));
-      	if (rc < 0)
-      	{
-         	perror("bind() failed");
-         	return ERROR;
-      	}
-	/*
-	 * Avisamos al sistema que comience a atender peticiones de clientes.
-	 */
-	if (listen (fdS, 1) == -1)
+	rc = bind(fdS, (struct sockaddr *)&serveraddr, sizeof(serveraddr));
+	if (rc < 0)
 	{
-		close (fdS);
+		perror("bind() failed");
 		return ERROR;
 	}
 
 	//inicializa los ipcsClient:
 
 	int i;
-	for(i=0;i<MAX_USERS;i++){
+	for(i=0;i<MAX_USERS;i++) {
 		ipcsClient[i].pid = EMPTY;
-		ipcsClient[i].fd = -1;
-		
+		ipcsClient[i].fd = -1;		
 	}
+
 	return OK;
 }
 
@@ -66,24 +61,16 @@ createChannel(int clientPID){
 	
 	socklen_t Longitud_Cliente;
 	struct sockaddr Cliente;
-	int fdC;
-
-	Longitud_Cliente = sizeof(Cliente);
-	fdC = accept(fdS, &Cliente, &Longitud_Cliente);
-	if(fdC == -1)
-		return ERROR;
-	
 
 	if ((numeroClientes) <= MAX_USERS)
 	{		
 		ipcsClient[numeroClientes].pid = clientPID;
-		ipcsClient[numeroClientes].fd = fdC;
 		numeroClientes++;
 	}
 	else {
 		return ERROR;
 	}
-		
+
 	printf ("Aceptado cliente %d\n", clientPID);
 	return OK;
 	
@@ -91,45 +78,51 @@ createChannel(int clientPID){
 
 request_t 
 receiveRequest(){
-	
+
 	int maximo;
 	int i, rc;
+
 	request_t request;
 
-	//rc = recv(fdS, &request, sizeof(request), 0);
-	rc = read (fdS, &request, sizeof(request));
-	while (rc < 0)
-	{
-		//perror("recv() failed");
+	struct sockaddr_un clientaddr;
+	int	clientaddrlen = sizeof(clientaddr);
 
+	rc = recvfrom(fdS, &request, sizeof(request), 0, (struct sockaddr *)&clientaddr, &clientaddrlen);
+	
+	if (rc < 0)
+	{
+		perror("recvfrom() failed");
 		request.reqID = ERROR;
-		//return request;
-	} 
+	}
 
 	printf("recibio request= %d\n",request.reqID);
 			
 	return request;
-	
 }
 
 void 
 sendRequest(request_t request){
-	int rc,i;
-	int fdC;
 
-	for(i=0;i<MAX_USERS;i++){
-		if(ipcsClient[i].pid == request.PID){
-			fdC = ipcsClient[i].fd;
-		}
+	int rc, i;
+	char clientPath[20];
+
+	sprintf(clientPath, "%s%d", CLIENT_NAME, request.PID);
+	printf("clientPath: %s\n", clientPath);
+
+	struct sockaddr_un clientaddr;
+	int	clientaddrlen = sizeof(clientaddr);
+	memset(&clientaddr, 0, sizeof(clientaddr));
+	clientaddr.sun_family = AF_UNIX;
+	strcpy(clientaddr.sun_path, clientPath);
+
+	rc = sendto(fdS, &request, sizeof(request), 0, (struct sockaddr *)&clientaddr, sizeof(clientaddr));
+	
+	if (rc < 0)
+	{
+		perror("sendto() failed");
+		return;;
 	}
 
-	//rc = send(fdC, &request, sizeof(request), 0);
-	rc = write (fdC,  &request, sizeof(request));
-     	if (rc < 0)
-      	{
-         	perror("send() failed");
-         	return;
-      	}
 	printf("escribio en el client: %d\n", request.PID);
 }
 
@@ -150,6 +143,7 @@ closeChannel(){
 			close(ipcsClient[i].fd);
 		}
 	}
+
 	remove(SERVER_NAME);
 	printf("cierro puertos\n");
 	return OK;

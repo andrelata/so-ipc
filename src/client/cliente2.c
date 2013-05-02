@@ -35,7 +35,7 @@ void makeConnection(){
 		char nick[20];
 		printf("Elija su nickname para conectarse\n");
 		while( scanf("%s", nick) < 1);
-		connectionStatus = connectChannel(nick);
+		connectionStatus = connectClient(nick);
 		if( connectionStatus == ERROR ){
 			printf("Error en la conexion\n");
 		}
@@ -93,7 +93,7 @@ int toSession(){
 		case DISCONNECT:
 			checkPrice();
 			getRequest();
-			disconnectChannel();
+			disconnectClient();
 			break;
 
 		default:
@@ -163,19 +163,20 @@ void printMessage(message_t * message){
 	printf("%s dijo: %s\t\t\t %s", message->nickname, message->messageBody, ctime(&(message->time)));
 }
 
-int connectChannel(char nick[]){
+int connectClient(char nick[]){
 	request_t req, req2;
 	req.reqID = CONNECT;
 	req.PID = getpid();
 	strncpy(req.name, nick, NAME_LENGTH);
+	if( openCChannel() == ERROR){
+		return ERROR;
+	}
+	sleep(1);
 	if( openSChannel() == ERROR){
 		return ERROR;
 	}
 	sendRequest(req);
 	sleep(1);
-	if( openCChannel() == ERROR){
-		return ERROR;
-	}
 	req2 = receiveRequest();
 	if(req2.reqID==ERROR){
 		printf("Error: %s\n", req2.message);
@@ -185,7 +186,7 @@ int connectChannel(char nick[]){
 	return OK;
 }
 
-int disconnectChannel(){
+int disconnectClient(){
 	request_t req;
 	req.reqID = DISCONNECT;
 	req.PID = getpid();

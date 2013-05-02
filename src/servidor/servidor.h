@@ -22,7 +22,7 @@ cierra el fifo dle cliente .
 le manda un request al usuario notificando resultados la operacion
 y la tarifa que debe abonar.
 */
-void disconnect(pid_t PID);
+void disconnectClient(pid_t PID);
 
 /**
 Parametros: PID del usuario

@@ -86,7 +86,7 @@ parserRequest(request_t request){
 			connectClient(request.PID, request.name);
 			break;
 		case DISCONNECT:
-			disconnect(request.PID);
+			disconnectClient(request.PID);
 			break;
 		case GET_SESSIONS:
 			getSession(request.PID);
@@ -195,7 +195,7 @@ connectClient(pid_t PID, char * name){
 }
 
 void 
-disconnect(pid_t PID){
+disconnectClient(pid_t PID){
 
 	request_t request;
 	int i;

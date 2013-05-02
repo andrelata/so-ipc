@@ -35,14 +35,14 @@ Parametros: nickname
 Envia un request al servidor para conectarse con el, abriendo los canales de comunicacion correspondientes.
 Retorna OK si la operacion fue exitosa o ERROR si se produjo un error.
 */
-int connectChannel(char nick[]);
+int connectClient(char nick[]);
 
 /**
 Parametros: ninguno
 Envia al servidor un request para desconectarse, cerrando los canales de comunicacion.
 Retorna OK si la operacion fue exitosa o ERROR si se produjo un error.
 */
-int disconnectChannel();
+int disconnectClient();
 
 /**
 Parametros: ninguno

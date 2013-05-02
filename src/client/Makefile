@@ -5,8 +5,12 @@ TARGET = client
 #SOURCES = client_fifo.c cliente.c
 
 #Compilar socket
-OBJS = ./obj/cliente.o  ./obj/cliente_socket.o 
-SOURCES = cliente_socket.c cliente.c
+#OBJS = ./obj/cliente.o  ./obj/cliente_socket.o 
+#SOURCES = cliente_socket.c cliente.c
+
+#Compilar socket
+OBJS = ./obj/cliente2.o  ./obj/client_socket.o 
+SOURCES = client_socket.c cliente2.c
 
 #Compilar queue
 #OBJS = ./obj/client.o  ./obj/client_queue.o 
@@ -16,7 +20,8 @@ SOURCES = cliente_socket.c cliente.c
 #OBJS = ./obj/client.o  ./obj/client_shmem.o 
 #SOURCES = client_shmem.c client.c
 
-CFLAGS = -Wall -O -Wuninitialized -g -lrt -lpthread 
+CFLAGS = -Wall -O -Wuninitialized -g -lpthread 
+#CFLAGS = -Wall -O -Wuninitialized -g -lrt -lpthread 
 
 .SILENT:
 
