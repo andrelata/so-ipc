@@ -13,7 +13,6 @@
 
 int fdS, fdC;
 
-
 int 
 openCChannel()
 {
