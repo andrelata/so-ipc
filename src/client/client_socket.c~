@@ -108,7 +108,7 @@ receiveRequest()
 	}
 	printf("Recibio del server:%d\n", request.reqID);
 
-	if(request.reqID == ANS){
+	if(req.reqID == ANS){
 		sprintf(serverPath, "/server_%d_queue", request.par1);
 	}
 

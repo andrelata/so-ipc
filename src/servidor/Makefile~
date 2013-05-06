@@ -12,12 +12,12 @@ SOURCES = servidor_fifo.c servidor.c
 #SOURCES = servidor_Socket.c servidorC.c
 
 #Compilar servidor queue
-OBJS = ./obj/servidor_queue.o ./obj/servidorC.o 
-SOURCES = servidor_queue.c servidorC.c
+#OBJS = ./obj/servidor_queue.o ./obj/servidorC.o 
+#SOURCES = servidor_queue.c servidorC.c
 
 #Compilar servidor shmem
-#OBJS = ./obj/servidor_shmem.o ./obj/servidorC.o 
-#SOURCES = servidor_shmem.c servidorC.c
+OBJS = ./obj/servidor_shmem.o ./obj/servidorC.o 
+SOURCES = servidor_shmem.c servidorC.c
 
 #CFLAGS = -Wall -O -Wuninitialized -g -lpthread
 CFLAGS = -Wall -O -Wuninitialized -g -lrt -lpthread

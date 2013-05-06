@@ -13,12 +13,12 @@ SOURCES = client_fifo.c cliente.c
 #SOURCES = client_socket.c cliente2.c
 
 #Compilar queue
-OBJS = ./obj/cliente.o  ./obj/client_queue.o 
-SOURCES = client_queue.c cliente.c
+#OBJS = ./obj/cliente.o  ./obj/client_queue.o 
+#SOURCES = client_queue.c cliente.c
 
 #Compilar shmem
-#OBJS = ./obj/cliente.o  ./obj/client_shmem.o 
-#SOURCES = client_shmem.c cliente.c
+OBJS = ./obj/cliente.o  ./obj/client_shmem.o 
+SOURCES = client_shmem.c cliente.c
 
 #CFLAGS = -Wall -O -Wuninitialized -g -lpthread 
 CFLAGS = -Wall -O -Wuninitialized -g -lrt -lpthread 

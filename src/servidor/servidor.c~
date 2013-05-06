@@ -156,13 +156,7 @@ disconnectClient(pid_t PID){
 
 	user[k].userID = EMPTY;
 
-	if(closeCChannel(PID) == OK){
-		request.reqID = OK;
-	}else{
-		request.reqID = ERROR;
-	}
-
-	sendRequest(request);
+	closeCChannel(PID);
 }
 
 void getSession(pid_t PID)
