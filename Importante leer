@@ -1,9 +1,15 @@
 Instrucciones para correr el programa:
 
-1. Correr el make clean en la carpeta src/client, y despues el make
+1. Abrir el archivo Makefile en la carpeta src/client y descomentar las lineas OBJS y SOURCES de la IPC que que se quiere compilar. Por ejemplo, si se desea compilar con message queue, hay que descomentar las dos lineas que se encuentran debajo del comentario "#Compilar queue", y que son:
+OBJS = ./obj/cliente.o  ./obj/client_queue.o 
+SOURCES = client_queue.c cliente.c
 
-2. Correr el make clean en la carpeta src/servidor y despues el make
+2. Repetir el paso anterior para el Makefile de src/servidor
 
-3. Ejecutar el servidor en una terminal ./servidor
+3. Correr el make clean en la carpeta src/client, y despues el make
 
-4. Ejecutar el cliente en una terminal ./cliente
+4. Correr el make clean en la carpeta src/servidor y despues el make
+
+5. Ejecutar el servidor en una terminal ./servidor
+
+6. Ejecutar el cliente en una terminal ./cliente
